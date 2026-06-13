@@ -2,7 +2,7 @@
 export interface JwtUser {
   sub: string;
   email: string;
-  role: 'DEVELOPER_PARTNER';
+  role: 'DEVELOPER_PARTNER' | 'CUSTOMER';
   licenseActive: boolean;
 }
 

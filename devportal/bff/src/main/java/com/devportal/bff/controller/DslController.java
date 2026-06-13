@@ -40,8 +40,22 @@ public class DslController {
 
     @PostMapping("/sandbox/run")
     public ResponseEntity<Map<String, Object>> runSandbox(@RequestBody Map<String, String> body) {
-        // Mock sandbox execution
+        String dslCode = body.get("dslCode");
+        var validationErrors = dslEngineClient.validateDsl(dslCode);
+
         String runId = "run-" + System.currentTimeMillis();
+        if (!validationErrors.isEmpty()) {
+            var steps = List.of(
+                Map.of("timestamp", java.time.Instant.now().toString(), "description", "Initializing sandbox environment", "status", "OK"),
+                Map.of("timestamp", java.time.Instant.now().plusSeconds(1).toString(), "description", "Loading DSL definitions", "status", "OK"),
+                Map.of("timestamp", java.time.Instant.now().plusSeconds(2).toString(), "description", "Validating DSL syntax", "status", "OK"),
+                Map.of("timestamp", java.time.Instant.now().plusSeconds(3).toString(), "description", "Validation failed: " + validationErrors.get(0).get("message"), "status", "ERROR"),
+                Map.of("timestamp", java.time.Instant.now().plusSeconds(4).toString(), "description", "Dry-run aborted due to compilation errors", "status", "ERROR")
+            );
+            return ResponseEntity.ok(Map.of("runId", runId, "steps", steps));
+        }
+
+        // Mock sandbox execution
         var steps = List.of(
             Map.of("timestamp", java.time.Instant.now().toString(), "description", "Initializing sandbox environment", "status", "OK"),
             Map.of("timestamp", java.time.Instant.now().plusSeconds(1).toString(), "description", "Loading DSL definitions", "status", "OK"),
