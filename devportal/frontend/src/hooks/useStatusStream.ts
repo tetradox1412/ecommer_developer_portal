@@ -3,7 +3,8 @@ import type { StatusEvent } from '../types';
 
 export function useStatusStream(
   submissionId: string | null,
-  onEvent: (event: StatusEvent) => void
+  onEvent: (event: StatusEvent) => void,
+  onError?: (error: unknown) => void
 ) {
   useEffect(() => {
     if (!submissionId) return;
@@ -13,17 +14,23 @@ export function useStatusStream(
     const es = new EventSource(url);
 
     es.onmessage = (e) => {
-      const event: StatusEvent = JSON.parse(e.data);
-      onEvent(event);
-      if (event.status === 'ACTIVE' || event.status === 'ERROR') {
-        es.close();
+      try {
+        const event: StatusEvent = JSON.parse(e.data);
+        onEvent(event);
+        if (event.status === 'ACTIVE' || event.status === 'ERROR') {
+          es.close();
+        }
+      } catch (err) {
+        console.error('Failed to parse SSE event data:', err);
+        onError?.(err);
       }
     };
 
-    es.onerror = () => {
+    es.onerror = (e) => {
       console.error('SSE connection lost, browser will retry automatically');
+      onError?.(e);
     };
 
     return () => es.close();
-  }, [submissionId, onEvent]);
+  }, [submissionId, onEvent, onError]);
 }
