@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTicketStore } from '../../store/ticketStore';
 import { TicketCard } from '../../components/modules/TicketCard';
 import { ArrowClockwise, WarningCircle, Ticket } from '@phosphor-icons/react';
+import { ReviewingFigure } from '../../components/ui/LineArt';
 
 type Tab = 'ALL' | 'OPEN' | 'MINE';
 
@@ -52,7 +53,15 @@ export function TicketInbox() {
     <div className="min-h-full w-full bg-zinc-50/50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
       <div className="p-8 max-w-5xl mx-auto w-full flex flex-col h-full">
         {/* Header Block */}
-        <header className="mb-8 flex justify-between items-start gap-4">
+        <header className="mb-8 flex justify-between items-start gap-4 relative overflow-hidden">
+          <div className="absolute left-0 top-0 h-full w-20 text-zinc-300 dark:text-zinc-700 pointer-events-none hidden md:block">
+            <ReviewingFigure
+              className="w-full h-full"
+              opacity={1}
+              isReviewing={isLoading}
+              isComplete={filteredTickets.length > 0 && !isLoading}
+            />
+          </div>
           <div>
             <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight font-sans">
               Support Tickets

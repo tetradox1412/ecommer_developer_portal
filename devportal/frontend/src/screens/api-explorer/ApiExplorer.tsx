@@ -13,6 +13,7 @@ import {
   Trash,
   X 
 } from '@phosphor-icons/react';
+import { ReviewingFigure } from '../../components/ui/LineArt';
 
 interface JsonHighlighterProps {
   data: object;
@@ -244,7 +245,7 @@ function EndpointRow({ ep, moduleName: _moduleName, idx: _idx }: EndpointRowProp
 
         <div className="flex items-center gap-3">
           <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium font-sans bg-zinc-100 dark:bg-zinc-800/50 text-zinc-500 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800/40">
-            <Shield className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+            <Shield className="w-3 h-3 text-zinc-400 dark:text-zinc-500" weight="bold" />
             {ep.requiredRole}
           </span>
           
@@ -269,7 +270,7 @@ function EndpointRow({ ep, moduleName: _moduleName, idx: _idx }: EndpointRowProp
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-semibold">Required Role:</span>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
-                <Shield className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                <Shield className="w-3 h-3 text-zinc-400 dark:text-zinc-500" weight="bold" />
                 {ep.requiredRole}
               </span>
             </div>
@@ -280,7 +281,7 @@ function EndpointRow({ ep, moduleName: _moduleName, idx: _idx }: EndpointRowProp
             <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Access Rights</span>
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono font-medium bg-zinc-100 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800/80">
-                <Shield className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                <Shield className="w-3 h-3 text-zinc-400 dark:text-zinc-500" weight="bold" />
                 {ep.requiredRole}
               </span>
               <span className="text-xs text-zinc-400 dark:text-zinc-500">is required to invoke this endpoint.</span>
@@ -407,7 +408,15 @@ export function ApiExplorer() {
 
   return (
     <div className="p-8 max-w-5xl mx-auto w-full min-h-screen transition-colors duration-300">
-      <header className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-zinc-200 dark:border-zinc-800/80 pb-8">
+      <header className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-zinc-200 dark:border-zinc-800/80 pb-8 relative overflow-hidden">
+        <div className="absolute left-0 top-0 h-full w-20 text-zinc-300 dark:text-zinc-700 pointer-events-none hidden md:block">
+          <ReviewingFigure
+            className="w-full h-full"
+            opacity={1}
+            isReviewing={isLoading}
+            isComplete={!isLoading && modules.length > 0}
+          />
+        </div>
         <div className="space-y-2.5">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800/50 text-cyan-700 dark:text-cyan-400">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />

@@ -32,3 +32,12 @@ yarn-error.log*
 *.swp
 *.swo
 .DS_Store
+
+# Subagents
+.agents/
+
+# Environment
+.env
+.env.*
+
+PULL_REQUEST.md

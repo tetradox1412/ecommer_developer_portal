@@ -2,7 +2,10 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { Badge } from '../../components/ui/Badge';
 import { useStatusStream } from '../../hooks/useStatusStream';
 import type { StatusEvent } from '../../types';
-import { Cpu, TerminalWindow, Play, Square, Clock, MagnifyingGlass, ChartLine, HardDrives, TrashSimple } from '@phosphor-icons/react';
+import { Cpu, TerminalWindow, Play, Square, Clock, MagnifyingGlass, ChartLine, HardDrives, TrashSimple, Flask } from '@phosphor-icons/react';
+import { NeuralArt, DeployingFigure } from '../../components/ui/LineArt';
+
+const USE_MOCK_SANDBOX = (import.meta.env.VITE_USE_MOCK_SANDBOX ?? 'true') === 'true';
 
 interface SandboxInstance {
   id: string;
@@ -320,26 +323,48 @@ export function SandboxDashboard() {
     <div className="min-h-full w-full bg-zinc-50/50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
       <div className="p-8 max-w-7xl mx-auto w-full flex flex-col gap-6">
         
-        {/* Header Block */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight font-sans">
+      {/* Header Block */}
+        <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 relative overflow-hidden">
+          {/* Neural art background */}
+          <div className="absolute right-0 top-0 h-full w-60 text-zinc-400 dark:text-zinc-600 pointer-events-none">
+            <NeuralArt className="w-full h-full" opacity={1} />
+          </div>
+          {/* Deploying figure — hidden on mobile */}
+          <div className="absolute left-0 top-0 h-full w-20 text-zinc-400 dark:text-zinc-600 pointer-events-none hidden lg:block">
+            <DeployingFigure
+              className="w-full h-full"
+              opacity={1}
+              isDeploying={instances.some(i => i.status === 'RUNNING')}
+              isDone={instances.every(i => i.status === 'STOPPED')}
+            />
+          </div>
+          <div className="relative z-10">
+            <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">
               Sandbox Monitor
             </h1>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2 text-base font-sans">
-              Real-time resource graphs, thread telemetry, and compiler pipeline logging feeds.
+            <p className="text-zinc-500 dark:text-zinc-400 mt-1.5 text-sm">
+              Real-time resource graphs, thread telemetry, and compiler pipeline logs.
             </p>
           </div>
           
-          <div className="flex items-center gap-3">
-            {/* Cluster Connected State Indicator */}
-            <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 px-4 py-2.5 rounded-xl shadow-sm select-none">
-              <Cpu size={14} className="text-cyan-500 animate-pulse" />
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75 animate-duration-1000"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-              </div>
-              <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-mono tracking-tight">cluster::sandbox-01</span>
+          <div className="flex items-center gap-3 relative z-10 flex-wrap">
+            {/* Sandbox mode indicator */}
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-mono font-medium select-none ${
+              USE_MOCK_SANDBOX
+                ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-400'
+                : 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400'
+            }`}>
+              <Flask className="w-3 h-3" weight="bold" />
+              {USE_MOCK_SANDBOX ? 'MOCK MODE' : 'LIVE MODE'}
+            </div>
+            {/* Cluster connected state */}
+            <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-full shadow-sm select-none">
+              <Cpu size={13} className="text-cyan-500" weight="bold" />
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyan-500" />
+              </span>
+              <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300 font-mono">cluster::sandbox-01</span>
             </div>
           </div>
         </header>

@@ -10,6 +10,7 @@ import {
   ShareNetwork, 
   IdentificationCard
 } from '@phosphor-icons/react';
+import { CollaboratingFigure } from '../../components/ui/LineArt';
 
 // Local Custom FormField to enable full premium style and light/dark theme compatibility
 interface LocalFormFieldProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
@@ -226,9 +227,16 @@ ${deps}
   const xmlLines = manifestXml.split('\n');
 
   return (
-    <div className="min-h-full bg-zinc-50 dark:bg-[#060814] text-zinc-800 dark:text-zinc-100 flex flex-col p-6 gap-6 transition-colors duration-300">
+    <div className="min-h-full bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 flex flex-col p-6 gap-6 transition-colors duration-300">
       {/* Top Header */}
-      <header className="shrink-0 border-b border-zinc-200 dark:border-zinc-800 pb-5">
+      <header className="shrink-0 border-b border-zinc-200 dark:border-zinc-800 pb-5 relative overflow-hidden">
+        <div className="absolute left-0 top-0 h-full w-20 text-zinc-300 dark:text-zinc-700 pointer-events-none hidden lg:block">
+          <CollaboratingFigure
+            className="w-full h-full"
+            opacity={1}
+            isActive={validationErrors.length > 0}
+          />
+        </div>
         <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white font-sans">
           Manifest Builder
         </h1>
@@ -244,9 +252,9 @@ ${deps}
         <div className="lg:col-span-5 flex flex-col gap-6 min-h-0">
           
           {/* Metadata Form Card */}
-          <section className="bg-white dark:bg-[#0b0e1a]/80 border border-zinc-200 dark:border-zinc-900 p-6 rounded-xl shadow-sm backdrop-blur-sm shrink-0">
+          <section className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl shadow-sm shrink-0">
             <h2 className="text-lg font-bold text-zinc-900 dark:text-white mb-5 flex items-center gap-2 font-sans">
-              <IdentificationCard className="w-5 h-5 text-cyan-accent" />
+              <IdentificationCard className="w-5 h-5 text-zinc-800 dark:text-zinc-300" weight="bold" />
               Module Metadata
             </h2>
             <div className="flex flex-col gap-4">
@@ -292,7 +300,7 @@ ${deps}
                           ? 'bg-red-100/60 text-red-650 dark:bg-red-950/80 dark:text-red-400/90' 
                           : 'bg-amber-100/60 text-amber-650 dark:bg-amber-950/80 dark:text-amber-400/90'
                       }`}>
-                        <Warning className="w-4 h-4" />
+                        <Warning className="w-4 h-4" weight="bold" />
                       </div>
                       
                       <div className="space-y-1">
@@ -319,10 +327,10 @@ ${deps}
           )}
 
           {/* XML Output Card */}
-          <section className="bg-white dark:bg-[#0b0e1a]/80 border border-zinc-200 dark:border-zinc-900 p-6 rounded-xl shadow-sm backdrop-blur-sm flex-grow flex flex-col min-h-[250px] lg:min-h-0">
+          <section className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl shadow-sm flex-grow flex flex-col min-h-[250px] lg:min-h-0">
             <div className="flex justify-between items-center mb-4 shrink-0">
               <h2 className="text-lg font-bold text-zinc-900 dark:text-white flex items-center gap-2 font-sans">
-                <FileCode className="w-5 h-5 text-cyan-accent" />
+                <FileCode className="w-5 h-5 text-zinc-800 dark:text-zinc-300" weight="bold" />
                 Generated XML
               </h2>
               <button 
@@ -336,7 +344,7 @@ ${deps}
                   </>
                 ) : (
                   <>
-                    <Copy className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300" />
+                    <Copy className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300" weight="bold" />
                     <span>Copy XML</span>
                   </>
                 )}
@@ -360,10 +368,10 @@ ${deps}
         </div>
 
         {/* Right column (col-span-7) */}
-        <div className="lg:col-span-7 bg-white dark:bg-[#0b0e1a]/80 border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden flex flex-col min-h-[450px] lg:min-h-0 shadow-sm backdrop-blur-sm">
-          <div className="p-4 border-b border-zinc-200 dark:border-zinc-900 shrink-0 flex items-center justify-between">
+        <div className="lg:col-span-7 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden flex flex-col min-h-[450px] lg:min-h-0 shadow-sm">
+          <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 shrink-0 flex items-center justify-between">
             <h2 className="text-lg font-bold text-zinc-900 dark:text-white flex items-center gap-2 font-sans">
-              <ShareNetwork className="w-5 h-5 text-cyan-accent" />
+              <ShareNetwork className="w-5 h-5 text-zinc-800 dark:text-zinc-300" weight="bold" />
               Dependency Graph
             </h2>
             <div className="text-[10px] uppercase tracking-widest text-zinc-400 dark:text-zinc-500 font-bold font-mono">

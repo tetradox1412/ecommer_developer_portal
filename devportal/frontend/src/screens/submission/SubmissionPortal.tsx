@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { FormField } from '../../components/ui/FormField';
 import { useStatusStream } from '../../hooks/useStatusStream';
 import type { StatusEvent, SubmitDslRequest } from '../../types';
+import { PresentingFigure, SignalWaves, CollaboratingFigure } from '../../components/ui/LineArt';
 import { 
   Check, 
   CircleNotch, 
@@ -100,16 +101,35 @@ export function SubmissionPortal() {
       `}</style>
 
       {/* Header section */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800/80 pb-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white font-sans">
+      <header className="relative flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800/80 pb-6 overflow-hidden">
+        {/* Line art decorations */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 text-zinc-300 dark:text-zinc-700 pointer-events-none">
+          <SignalWaves className="w-full h-full" opacity={1} />
+        </div>
+        <div className="absolute left-4 top-0 w-24 h-full text-zinc-300 dark:text-zinc-700 pointer-events-none hidden md:block">
+          <PresentingFigure
+            className="w-full h-full"
+            opacity={1}
+            isActive={!!isCompiling}
+            isDone={isTerminal && events.length > 0 && events[events.length - 1].status === 'ACTIVE'}
+          />
+        </div>
+        <div className="absolute left-32 top-0 w-20 h-full text-zinc-300 dark:text-zinc-700 pointer-events-none hidden lg:block">
+          <CollaboratingFigure
+            className="w-full h-full"
+            opacity={1}
+            isActive={!!isCompiling}
+          />
+        </div>
+        <div className="relative z-10">
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
             Module Submission Portal
           </h1>
-          <p className="text-zinc-500 dark:text-zinc-400 mt-1 text-sm font-sans">
+          <p className="text-zinc-500 dark:text-zinc-400 mt-1 text-sm">
             Deploy, validate, and orchestrate custom extensions and business modules.
           </p>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-3 shrink-0 relative z-10">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80 text-xs font-mono text-zinc-600 dark:text-zinc-400 shadow-sm">
             {isCompiling ? (
               <CircleNotch className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-accent animate-spin" weight="bold" />
@@ -181,7 +201,7 @@ export function SubmissionPortal() {
         <section className="lg:col-span-7">
           {activeSubmissionId ? (
             /* Active compilation timeline card */
-            <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 p-6 rounded-2xl shadow-sm space-y-6 h-full flex flex-col justify-between">
+            <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 p-6 rounded-2xl shadow-sm space-y-6 h-full flex flex-col justify-start">
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
                   <div>
@@ -299,7 +319,7 @@ export function SubmissionPortal() {
             </div>
           ) : (
             /* Compiler syntax reference guides card (shown when pipeline idle) */
-            <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 p-6 rounded-2xl shadow-sm space-y-6 h-full flex flex-col justify-between">
+            <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 p-6 rounded-2xl shadow-sm space-y-6 h-full flex flex-col justify-start">
               <div className="space-y-6">
                 <div>
                   <h2 className="text-lg font-bold text-zinc-900 dark:text-white font-sans">Automated Verification Pipeline</h2>
@@ -316,10 +336,10 @@ export function SubmissionPortal() {
                     { num: '03', title: 'Sandbox VM', desc: 'Deploys container' },
                     { num: '04', title: 'Hot Reload', desc: 'Activates routes' }
                   ].map((step, i) => (
-                    <div key={i} className="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 rounded-xl p-3 text-center space-y-1 hover:border-cyan-500/20 dark:hover:border-cyan-accent/20 transition-all duration-300">
-                      <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-accent">{step.num}</span>
-                      <h4 className="text-xs font-bold text-zinc-800 dark:text-zinc-200 font-sans truncate">{step.title}</h4>
-                      <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight font-sans">{step.desc}</p>
+                    <div key={i} className="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 rounded-xl p-4 text-center hover:border-cyan-500/20 dark:hover:border-cyan-accent/20 transition-all duration-300">
+                      <span className="font-sans text-sm font-semibold tracking-wider text-cyan-600 dark:text-cyan-accent block mb-1.5">{step.num}</span>
+                      <h4 className="text-xs font-bold text-zinc-900 dark:text-white font-sans truncate mb-0.5">{step.title}</h4>
+                      <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-normal font-sans">{step.desc}</p>
                     </div>
                   ))}
                 </div>

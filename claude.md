@@ -1,37 +1,24 @@
-# eCommerce Developer Portal Revamp Tracking (`claude.md`)
+# Developer Portal - Implementation Tasks
 
-This file tracks the active tasks, subagent allocations, and overall progress for the premium modernization of the eCommerce Developer Portal (eliminating emojis, improving transitions, and visual refinements).
+## Phase 1: Environment & Foundation
+- [x] Create `claude.md` to track progress.
+- [x] Update root `.gitignore` to include `.agents`, `.env.local`, etc.
+- [x] Add `.env` file with `VITE_USE_MOCK_SANDBOX=true`.
+- [x] Process `GIOLIT_logo_upscaled_4x.png` into cropped monochrome variants.
+- [x] Replace Vite favicon and update `index.html` title/icons.
 
-## Active Subagents (Iteration 2)
+## Phase 2: Frontend Subagents Execution
+- [x] `dev_frontend_shell`: Global layout, Theme switcher, Sidebar, Header, Typography.
+- [x] `dev_frontend_marketplace`: Customer Dashboard (Marketplace, Module Detail, My Subscriptions).
+- [x] `dev_frontend_developer`: Developer Console (DSL Playground, Manifest Builder, API Explorer).
+- [x] `dev_frontend_sandbox`: ERP Simulation Portal & Sandbox Dashboard (with mock env toggle).
+- [x] `dev_frontend_auth`: Google Login authentication flow and Route Protection.
 
-### Refactoring Subagents (5)
-- [/] **dev_sidebar_layout** (ID: 31552916-8d11-4b5d-a79e-c94e6f414f65)
-- [/] **dev_submission_portal** (ID: 62b2c7d9-db8f-474f-b9fa-662b291031ef)
-- [/] **dev_api_explorer** (ID: 23f8ff2e-b8c5-4187-8136-bc705967dfe5)
-- [/] **dev_playground_manifest** (ID: 8dfa036c-8d0e-4a32-962a-63b2840c79be)
-- [/] **dev_ticket_sandbox** (ID: c84f6e6e-50f5-4a9e-9c9a-cf1fc0983b77)
+## Phase 3: QA & Judging Subagents
+- [x] `judge_visual_design`: Typography, spacing, and anti-slop rules compliance.
+- [x] `judge_ux_accessibility`: WCAG AA contrast, empty/loading states, keyboard focus.
+- [x] `judge_functional_integrity`: Auth flows, sandbox mock toggle, routing.
 
-### Critic & Quality Subagents (3)
-- [ ] **judge_visual_design** (Aesthetic check, zero emojis/icons audit)
-- [ ] **judge_ux_accessibility** (Contrast checks, button wraps, responsive layout)
-- [ ] **judge_functional_integrity** (Typescript compliance, Zustand integration, SSE status)
-
----
-
-## Tasks & Checklist
-
-### Phase 1: Installation & Setup
-- [x] Install `@phosphor-icons/react` (Done)
-- [x] Update `claude.md` tracking (Done)
-
-### Phase 2: Code Refactoring (Parallel Subagents)
-- [ ] Refactor shell visual structure and wildcard transitions
-- [ ] Refactor Submission Portal and Module Card
-- [ ] Refactor API Explorer search and JSON panels
-- [ ] Refactor Monaco Editor, diagnostics, and React Flow nodes
-- [ ] Refactor Ticket cards and Sandbox dashboards
-
-### Phase 3: QA & Verification
-- [ ] Visual design audit
-- [ ] UX & Contrast verification
-- [ ] Functional compilation and build check
+## Phase 4: Documentation
+- [x] `usage_guide.md`: Plain English guide for customers and developers.
+- [x] `backend_guide.md`: Technical reference for BFF architecture.

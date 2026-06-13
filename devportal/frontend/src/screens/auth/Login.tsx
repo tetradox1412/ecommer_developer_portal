@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
 import { FormField } from '../../components/ui/FormField';
+import { ThinkingFigure, NeuralArt, SignalWaves } from '../../components/ui/LineArt';
 
 export function Login() {
   const { setToken, setLoading, isLoading, error, setError } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginRole, setLoginRole] = useState<'DEVELOPER_PARTNER' | 'CUSTOMER'>('DEVELOPER_PARTNER');
   const [showGoogleModal, setShowGoogleModal] = useState(false);
 
   const mockGoogleAccounts = [
@@ -28,7 +30,7 @@ export function Login() {
       const payload = btoa(JSON.stringify({
         sub: email.split('@')[0],
         email: email,
-        role: 'DEVELOPER_PARTNER',
+        role: loginRole,
         licenseActive: true,
       }));
       const mockToken = `${header}.${payload}.mocksignature`;
@@ -52,7 +54,7 @@ export function Login() {
       const payload = btoa(JSON.stringify({
         sub: selectedEmail.split('@')[0],
         email: selectedEmail,
-        role: 'DEVELOPER_PARTNER',
+        role: loginRole,
         licenseActive: true,
       }));
       const mockToken = `${header}.${payload}.mocksignature`;
@@ -69,29 +71,36 @@ export function Login() {
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
       {/* Brand panel (Left Side on Large Screens) */}
-      <div className="lg:w-1/2 bg-zinc-900 text-white p-12 flex flex-col justify-between relative overflow-hidden dark:border-r dark:border-zinc-800/80">
-        {/* Glow backdrop */}
-        <div className="absolute top-1/4 right-0 w-80 h-80 rounded-full bg-cyan-glow/10 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-12 left-12 w-48 h-48 rounded-full bg-blue-500/5 blur-[80px] pointer-events-none" />
-        
-        <div className="flex items-center gap-2 relative z-10">
-          <div className="w-8 h-8 rounded-lg bg-electric-cyan flex items-center justify-center text-zinc-950 font-black text-lg shadow-[0_0_12px_rgba(0,240,255,0.4)]">
-            E
-          </div>
-          <span className="font-bold tracking-tight text-xl">eCommer Portal</span>
+      <div className="lg:w-1/2 bg-zinc-950 text-white p-12 flex flex-col justify-between relative overflow-hidden">
+        {/* Signal waves at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 text-zinc-600">
+          <SignalWaves className="w-full h-full" opacity={1} />
+        </div>
+        {/* Neural art — top right */}
+        <div className="absolute top-0 right-0 w-64 h-64 text-zinc-600">
+          <NeuralArt className="w-full h-full" opacity={1} />
+        </div>
+        {/* Thinking figure — reacts to auth loading/error */}
+        <div className="absolute bottom-16 right-16 w-40 h-52 text-zinc-500">
+          <ThinkingFigure className="w-full h-full" opacity={1} isThinking={isLoading} hasError={!!error} />
         </div>
 
-        <div className="my-auto max-w-md relative z-10 pt-16 lg:pt-0">
-          <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight text-white mb-6">
+        <div className="flex items-center gap-3 relative z-10">
+          <img src="/logo-dark.png" alt="Giolit Labs Logo" className="h-12 w-auto" />
+          <span className="text-lg font-bold tracking-tight text-white font-sans">Developer Portal</span>
+        </div>
+
+        <div className="my-auto max-w-sm relative z-10 pt-16 lg:pt-0">
+          <h1 className="text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-white mb-5">
             Build the future of digital commerce.
           </h1>
-          <p className="text-zinc-400 text-base lg:text-lg leading-relaxed">
-            Submit custom modules, test code in secure sandboxes, and interface with our unified Core SaaS Wrapper.
+          <p className="text-zinc-400 text-sm lg:text-base leading-relaxed">
+            Submit modules, test in secure sandboxes, and interface with the unified Core SaaS Wrapper.
           </p>
         </div>
 
-        <div className="text-zinc-500 text-xs mt-12 relative z-10">
-          &copy; {new Date().getFullYear()} eCommer Inc. All rights reserved.
+        <div className="text-zinc-500 text-xs relative z-10">
+          &copy; 2026 Giolit Labs Inc.
         </div>
       </div>
 
@@ -99,13 +108,40 @@ export function Login() {
       <div className="lg:w-1/2 flex items-center justify-center p-8 lg:p-16 relative">
         <div className="w-full max-w-md space-y-8">
           <header className="space-y-3">
-            <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
-              Developer Console
+            <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white transition-all duration-300">
+              {loginRole === 'DEVELOPER_PARTNER' ? 'Developer Console' : 'Marketplace'}
             </h2>
-            <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
-              Sign in to manage your extensions and integrations.
+            <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium transition-all duration-300">
+              {loginRole === 'DEVELOPER_PARTNER' 
+                ? 'Sign in to manage your extensions and integrations.'
+                : 'Sign in to browse and install extensions.'}
             </p>
           </header>
+
+          <div className="flex p-1 space-x-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl shadow-inner dark:shadow-none">
+            <button
+              onClick={() => setLoginRole('DEVELOPER_PARTNER')}
+              type="button"
+              className={`w-full py-2.5 text-sm font-bold rounded-lg transition-all duration-200 cursor-pointer ${
+                loginRole === 'DEVELOPER_PARTNER'
+                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-600'
+                  : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+              }`}
+            >
+              Developer Partner
+            </button>
+            <button
+              onClick={() => setLoginRole('CUSTOMER')}
+              type="button"
+              className={`w-full py-2.5 text-sm font-bold rounded-lg transition-all duration-200 cursor-pointer ${
+                loginRole === 'CUSTOMER'
+                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-600'
+                  : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+              }`}
+            >
+              Customer
+            </button>
+          </div>
 
           {error && (
             <div className="p-4 bg-red-500/10 border border-red-500/20 dark:border-red-500/30 rounded-xl text-red-600 dark:text-red-400 text-sm font-medium animate-pulse">
@@ -152,6 +188,7 @@ export function Login() {
           {/* Premium Google Sign-in Button */}
           <button
             onClick={() => setShowGoogleModal(true)}
+            type="button"
             className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white hover:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 font-bold text-sm shadow-sm hover:shadow transition-all duration-200 select-none cursor-pointer transform active:scale-[0.98]"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -192,7 +229,7 @@ export function Login() {
                 Choose an Account
               </h3>
               <p className="text-xs text-zinc-500">
-                to sign in to eCommer Developer Portal
+                to sign in to Giolit Labs Developer Portal
               </p>
             </header>
 
@@ -201,6 +238,7 @@ export function Login() {
                 <button
                   key={account.email}
                   onClick={() => handleGoogleAccountSelect(account.email)}
+                  type="button"
                   className="flex items-center gap-3.5 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 text-left border border-transparent hover:border-zinc-100 dark:hover:border-zinc-700/50 transition-all duration-200 cursor-pointer"
                 >
                   <div className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-black text-xs flex items-center justify-center border border-zinc-200 dark:border-zinc-700">
