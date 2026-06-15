@@ -27,6 +27,30 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
 
+  googleLogin: (email: string, name: string, role: string) =>
+    request<{ token: string; user: { sub: string; email: string; role: string } }>('/bff/auth/google-login', {
+      method: 'POST',
+      body: JSON.stringify({ email, name, role }),
+    }),
+
+  getProfile: () =>
+    request<{ id: string; email: string; name: string; role: string; googleLinked: boolean }>('/bff/developer/profile'),
+
+  updateProfile: (name: string, email: string) =>
+    request<{ message: string }>('/bff/developer/profile', {
+      method: 'PUT',
+      body: JSON.stringify({ name, email }),
+    }),
+
+  changePassword: (oldPassword: string, newPassword: string) =>
+    request<{ message: string }>('/bff/developer/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ oldPassword, newPassword }),
+    }),
+
+  getActivities: () =>
+    request<Array<{ id: string; activity: string; timestamp: string }>>('/bff/developer/activities'),
+
   // Submission Portal
   submitDsl: (body: SubmitDslRequest) =>
     request<{ submissionId: string }>('/bff/dsl/submit', {

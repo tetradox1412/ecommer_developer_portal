@@ -6,7 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { FormField } from '../../components/ui/FormField';
 import { useStatusStream } from '../../hooks/useStatusStream';
 import type { StatusEvent, SubmitDslRequest } from '../../types';
-import { PresentingFigure, SignalWaves, CollaboratingFigure } from '../../components/ui/LineArt';
+import { SubmissionPortalFigure, SignalWaves, BlueprintGrid } from '../../components/ui/LineArt';
 import { 
   Check, 
   CircleNotch, 
@@ -101,27 +101,21 @@ export function SubmissionPortal() {
       `}</style>
 
       {/* Header section */}
-      <header className="relative flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800/80 pb-6 overflow-hidden">
+      <header className="relative flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800/80 pb-8">
         {/* Line art decorations */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 text-zinc-300 dark:text-zinc-700 pointer-events-none">
-          <SignalWaves className="w-full h-full" opacity={1} />
+        <div className="absolute bottom-0 left-[45%] right-0 h-16 text-zinc-500 dark:text-zinc-500 pointer-events-none">
+          <SignalWaves className="w-full h-full" opacity={0.15} />
         </div>
-        <div className="absolute left-4 top-0 w-24 h-full text-zinc-300 dark:text-zinc-700 pointer-events-none hidden md:block">
-          <PresentingFigure
+        <div className="absolute right-52 bottom-[-15px] w-28 h-24 text-zinc-500 dark:text-zinc-500 pointer-events-none hidden xl:block">
+          <SubmissionPortalFigure
             className="w-full h-full"
-            opacity={1}
+            opacity={0.85}
             isActive={!!isCompiling}
             isDone={isTerminal && events.length > 0 && events[events.length - 1].status === 'ACTIVE'}
+            hasError={events.some(e => e.status === 'ERROR')}
           />
         </div>
-        <div className="absolute left-32 top-0 w-20 h-full text-zinc-300 dark:text-zinc-700 pointer-events-none hidden lg:block">
-          <CollaboratingFigure
-            className="w-full h-full"
-            opacity={1}
-            isActive={!!isCompiling}
-          />
-        </div>
-        <div className="relative z-10">
+        <div className="relative z-10 flex-1">
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
             Module Submission Portal
           </h1>
@@ -129,7 +123,7 @@ export function SubmissionPortal() {
             Deploy, validate, and orchestrate custom extensions and business modules.
           </p>
         </div>
-        <div className="flex items-center gap-3 shrink-0 relative z-10">
+        <div className="flex items-center gap-3 shrink-0 relative z-10 md:pl-8 lg:pl-0">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80 text-xs font-mono text-zinc-600 dark:text-zinc-400 shadow-sm">
             {isCompiling ? (
               <CircleNotch className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-accent animate-spin" weight="bold" />
@@ -281,15 +275,29 @@ export function SubmissionPortal() {
               </div>
 
               {/* Terminal Logs Window */}
-              <div className="bg-zinc-50 dark:bg-zinc-950/70 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 font-mono text-xs text-zinc-600 dark:text-zinc-400 space-y-2 mt-4">
-                <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
+              <div className="relative overflow-hidden bg-zinc-50 dark:bg-zinc-950/70 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 font-mono text-xs text-zinc-600 dark:text-zinc-400 space-y-2 mt-4 min-h-[190px]">
+                <BlueprintGrid className="absolute inset-0 w-full h-full text-cyan-500/20 dark:text-cyan-accent/5 pointer-events-none" opacity={0.1} />
+                
+                {/* Background active compile figure */}
+                <div className="absolute right-4 bottom-2 w-24 h-20 text-zinc-200 dark:text-zinc-900 pointer-events-none z-0">
+                  <SubmissionPortalFigure
+                    className="w-full h-full"
+                    opacity={0.3}
+                    isActive={!!isCompiling}
+                    isDone={isTerminal && events.length > 0 && events[events.length - 1].status === 'ACTIVE'}
+                    hasError={events.some(e => e.status === 'ERROR')}
+                  />
+                </div>
+                
+                <div className="relative z-10 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-accent animate-pulse" />
                     <span>COMPILER STDOUT</span>
                   </div>
                   <span className="text-[10px] text-zinc-400 uppercase">TELEMETRY ON</span>
                 </div>
-                <div className="space-y-2 max-h-[150px] overflow-y-auto pr-2">
+                
+                <div className="relative z-10 space-y-2 max-h-[120px] overflow-y-auto pr-2">
                   {events.map((ev, i) => (
                     <div key={i} className="flex gap-2 items-start leading-relaxed">
                       <span className="text-zinc-400 shrink-0">[{new Date(ev.timestamp).toLocaleTimeString()}]</span>

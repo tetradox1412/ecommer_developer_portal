@@ -72,6 +72,8 @@ export function DslPlayground() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor;
+    editor.onDidFocusEditorText(() => setIsTyping(true));
+    editor.onDidBlurEditorText(() => setIsTyping(false));
   };
 
   const revealLine = (lineNum: number) => {
@@ -85,17 +87,17 @@ export function DslPlayground() {
   return (
     <div className="min-h-full bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 flex flex-col p-6 gap-6 transition-colors duration-300">
       {/* Top Header */}
-      <header className="shrink-0 relative flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-5 overflow-hidden">
+      <header className="shrink-0 relative flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-8">
         {/* Reactive coding figure — hidden on mobile */}
-        <div className="absolute left-0 top-0 h-full w-28 text-zinc-300 dark:text-zinc-700 pointer-events-none hidden lg:block">
+        <div className="absolute right-60 bottom-0 w-28 h-32 text-zinc-500 dark:text-zinc-500 pointer-events-none hidden xl:block">
           <CodingFigure
             className="w-full h-full"
-            opacity={1}
+            opacity={0.85}
             isTyping={isTyping}
             hasError={errors.length > 0}
           />
         </div>
-        <div className="relative z-10">
+        <div className="relative z-10 flex-1">
           <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white font-sans">
             DSL Playground
           </h1>
@@ -103,7 +105,7 @@ export function DslPlayground() {
             Write, validate, and dry-run your module DSL inside an isolated sandbox environment.
           </p>
         </div>
-        <div className="flex items-center gap-3 shrink-0 relative z-10">
+        <div className="flex items-center gap-3 shrink-0 relative z-10 sm:pl-8 lg:pl-0">
           <Button 
             onClick={handleRunDry} 
             isLoading={isRunning} 

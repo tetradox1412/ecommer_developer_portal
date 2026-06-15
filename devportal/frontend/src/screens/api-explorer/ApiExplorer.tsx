@@ -365,6 +365,7 @@ export function ApiExplorer() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -408,16 +409,17 @@ export function ApiExplorer() {
 
   return (
     <div className="p-8 max-w-5xl mx-auto w-full min-h-screen transition-colors duration-300">
-      <header className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-zinc-200 dark:border-zinc-800/80 pb-8 relative overflow-hidden">
-        <div className="absolute left-0 top-0 h-full w-20 text-zinc-300 dark:text-zinc-700 pointer-events-none hidden md:block">
+      <header className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-zinc-200 dark:border-zinc-800/80 pb-8 relative">
+        <div className="absolute right-[340px] bottom-[-23px] h-24 w-20 text-zinc-500 dark:text-zinc-500 pointer-events-none hidden xl:block">
           <ReviewingFigure
             className="w-full h-full"
-            opacity={1}
+            opacity={0.85}
             isReviewing={isLoading}
             isComplete={!isLoading && modules.length > 0}
+            isSearching={isSearchFocused}
           />
         </div>
-        <div className="space-y-2.5">
+        <div className="space-y-2.5 flex-1">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800/50 text-cyan-700 dark:text-cyan-400">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
             API REFERENCE
@@ -440,6 +442,8 @@ export function ApiExplorer() {
             placeholder="Search endpoints..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setIsSearchFocused(true)}
+            onBlur={() => setIsSearchFocused(false)}
             className="w-full px-4 py-2.5 pl-10 pr-12 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm font-sans"
           />
           {searchQuery ? (
@@ -473,9 +477,14 @@ export function ApiExplorer() {
       {isLoading ? (
         <ExplorerSkeleton />
       ) : filteredModules.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-center p-16 border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-zinc-50/20 dark:bg-zinc-900/5">
-          <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900/40 flex items-center justify-center text-zinc-400 dark:text-zinc-500 mb-4 border border-zinc-200/50 dark:border-zinc-800/50">
-            <MagnifyingGlass className="w-5 h-5" weight="bold" />
+        <div className="flex flex-col items-center justify-center text-center p-16 border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-zinc-50/20 dark:bg-zinc-900/5 select-none">
+          <div className="w-32 h-44 text-zinc-400 dark:text-zinc-600 transition-colors mb-2">
+            <ReviewingFigure
+              className="w-full h-full"
+              opacity={0.85}
+              isSearching={true}
+              isReviewing={true}
+            />
           </div>
           <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">No endpoints found</h3>
           <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 max-w-xs">

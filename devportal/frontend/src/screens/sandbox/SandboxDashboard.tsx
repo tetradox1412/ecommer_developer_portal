@@ -3,7 +3,7 @@ import { Badge } from '../../components/ui/Badge';
 import { useStatusStream } from '../../hooks/useStatusStream';
 import type { StatusEvent } from '../../types';
 import { Cpu, TerminalWindow, Play, Square, Clock, MagnifyingGlass, ChartLine, HardDrives, TrashSimple, Flask } from '@phosphor-icons/react';
-import { NeuralArt, DeployingFigure } from '../../components/ui/LineArt';
+import { NeuralArt, DeployingFigure, BlueprintGrid } from '../../components/ui/LineArt';
 
 const USE_MOCK_SANDBOX = (import.meta.env.VITE_USE_MOCK_SANDBOX ?? 'true') === 'true';
 
@@ -182,6 +182,7 @@ export function SandboxDashboard() {
   const [streamEvents, setStreamEvents] = useState<StatusEvent[]>(INITIAL_LOGS);
   const [filterText, setFilterText] = useState('');
   const logTerminalEndRef = useRef<HTMLDivElement>(null);
+  const terminalContainerRef = useRef<HTMLDivElement>(null);
 
   // Seed initial histories for sparklines
   const [history, setHistory] = useState<Record<string, { cpu: number[]; memory: number[] }>>(() => {
@@ -218,7 +219,9 @@ export function SandboxDashboard() {
 
   // Auto scroll terminal to the bottom when new logs arrive
   useEffect(() => {
-    logTerminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (terminalContainerRef.current) {
+      terminalContainerRef.current.scrollTop = terminalContainerRef.current.scrollHeight;
+    }
   }, [streamEvents]);
 
   // Simulate real-time metrics updates
@@ -324,21 +327,21 @@ export function SandboxDashboard() {
       <div className="p-8 max-w-7xl mx-auto w-full flex flex-col gap-6">
         
       {/* Header Block */}
-        <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 relative overflow-hidden">
+        <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-8 relative">
           {/* Neural art background */}
-          <div className="absolute right-0 top-0 h-full w-60 text-zinc-400 dark:text-zinc-600 pointer-events-none">
-            <NeuralArt className="w-full h-full" opacity={1} />
+          <div className="absolute left-[55%] top-0 h-full w-60 text-zinc-200 dark:text-zinc-800/60 pointer-events-none hidden lg:block">
+            <NeuralArt className="w-full h-full" opacity={0.5} />
           </div>
           {/* Deploying figure — hidden on mobile */}
-          <div className="absolute left-0 top-0 h-full w-20 text-zinc-400 dark:text-zinc-600 pointer-events-none hidden lg:block">
+          <div className="absolute left-[42%] bottom-[-32px] w-20 h-28 text-zinc-400 dark:text-zinc-600 pointer-events-none hidden xl:block">
             <DeployingFigure
               className="w-full h-full"
-              opacity={1}
+              opacity={0.85}
               isDeploying={instances.some(i => i.status === 'RUNNING')}
               isDone={instances.every(i => i.status === 'STOPPED')}
             />
           </div>
-          <div className="relative z-10">
+          <div className="relative z-10 flex-1">
             <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">
               Sandbox Monitor
             </h1>
@@ -372,8 +375,9 @@ export function SandboxDashboard() {
         {/* Aggregate Stats Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 select-none">
           {/* Card: Total CPU */}
-          <div className="bg-white dark:bg-zinc-950/20 border border-zinc-200 dark:border-zinc-900 p-6 rounded-2xl flex items-center justify-between shadow-sm hover:border-zinc-300 dark:hover:border-zinc-850 transition-all">
-            <div className="flex flex-col gap-1.5">
+          <div className="relative overflow-hidden bg-white dark:bg-zinc-950/20 border border-zinc-200 dark:border-zinc-900 p-6 rounded-2xl flex items-center justify-between shadow-sm hover:border-zinc-300 dark:hover:border-zinc-850 transition-all">
+            <BlueprintGrid className="absolute inset-0 w-full h-full text-cyan-500/20 dark:text-cyan-accent/5 pointer-events-none" opacity={0.12} />
+            <div className="relative z-10 flex flex-col gap-1.5">
               <div className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">
                 <Cpu size={14} className="text-cyan-500" />
                 <span>Total CPU Util</span>
@@ -388,8 +392,9 @@ export function SandboxDashboard() {
           </div>
 
           {/* Card: Total Memory */}
-          <div className="bg-white dark:bg-zinc-950/20 border border-zinc-200 dark:border-zinc-900 p-6 rounded-2xl flex items-center justify-between shadow-sm hover:border-zinc-300 dark:hover:border-zinc-850 transition-all">
-            <div className="flex flex-col gap-1.5">
+          <div className="relative overflow-hidden bg-white dark:bg-zinc-950/20 border border-zinc-200 dark:border-zinc-900 p-6 rounded-2xl flex items-center justify-between shadow-sm hover:border-zinc-300 dark:hover:border-zinc-850 transition-all">
+            <BlueprintGrid className="absolute inset-0 w-full h-full text-purple-500/20 dark:text-purple-400/5 pointer-events-none" opacity={0.12} />
+            <div className="relative z-10 flex flex-col gap-1.5">
               <div className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">
                 <HardDrives size={14} className="text-purple-500" />
                 <span>Total Memory RAM</span>
@@ -404,8 +409,9 @@ export function SandboxDashboard() {
           </div>
 
           {/* Card: Active Instances */}
-          <div className="bg-white dark:bg-zinc-950/20 border border-zinc-200 dark:border-zinc-900 p-6 rounded-2xl flex items-center justify-between shadow-sm hover:border-zinc-300 dark:hover:border-zinc-850 transition-all">
-            <div className="flex flex-col gap-1.5">
+          <div className="relative overflow-hidden bg-white dark:bg-zinc-950/20 border border-zinc-200 dark:border-zinc-900 p-6 rounded-2xl flex items-center justify-between shadow-sm hover:border-zinc-300 dark:hover:border-zinc-850 transition-all">
+            <BlueprintGrid className="absolute inset-0 w-full h-full text-emerald-500/20 dark:text-emerald-450/5 pointer-events-none" opacity={0.12} />
+            <div className="relative z-10 flex flex-col gap-1.5">
               <div className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">
                 <ChartLine size={14} className="text-emerald-500" />
                 <span>Orchestrated Pods</span>
@@ -580,7 +586,9 @@ export function SandboxDashboard() {
               </div>
 
               {/* Log stream output wrapper */}
-              <div className="flex-1 overflow-y-auto p-1 py-3 flex flex-col bg-zinc-950/80 backdrop-blur-md">
+              <div ref={terminalContainerRef} className="relative overflow-hidden flex-1 overflow-y-auto p-1 py-3 flex flex-col bg-zinc-950/80 backdrop-blur-md">
+                <BlueprintGrid className="absolute inset-0 w-full h-full text-cyan-500/10 dark:text-cyan-accent/5 pointer-events-none" opacity={0.06} />
+                <div className="relative z-10 w-full h-full">
                 {filteredEvents.length === 0 ? (
                   <div className="text-zinc-700 h-full flex items-center justify-center text-xs font-mono select-none">
                     NO LOGS FOUND MATCHING FILTER
@@ -636,6 +644,7 @@ export function SandboxDashboard() {
                 )}
                 {/* Reference point to stick log scrolling */}
                 <div ref={logTerminalEndRef} />
+                </div>
               </div>
               
               {/* Terminal status bar */}

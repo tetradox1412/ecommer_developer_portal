@@ -50,7 +50,7 @@ export function MarketplaceDashboard() {
       
       {/* Hero header with neural art */}
       <div className="relative overflow-hidden border-b border-zinc-100 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-950 px-8 pt-10 pb-8">
-        <div className="absolute right-0 top-0 w-80 h-full text-zinc-400 dark:text-zinc-600 opacity-60">
+        <div className="absolute right-0 top-0 w-80 h-full text-zinc-600 dark:text-zinc-500 opacity-90">
           <NeuralArt className="w-full h-full" opacity={1} />
         </div>
         <div className="relative z-10 max-w-2xl">

@@ -3,11 +3,13 @@ import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
 import { FormField } from '../../components/ui/FormField';
 import { ThinkingFigure, NeuralArt, SignalWaves } from '../../components/ui/LineArt';
+import { api } from '../../api/bff';
 
 export function Login() {
   const { setToken, setLoading, isLoading, error, setError } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [loginRole, setLoginRole] = useState<'DEVELOPER_PARTNER' | 'CUSTOMER'>('DEVELOPER_PARTNER');
   const [showGoogleModal, setShowGoogleModal] = useState(false);
 
@@ -25,21 +27,10 @@ export function Login() {
     setLoading(true);
     setError(null);
     try {
-      // Create a mock JWT token for normal login
-      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-      const payload = btoa(JSON.stringify({
-        sub: email.split('@')[0],
-        email: email,
-        role: loginRole,
-        licenseActive: true,
-      }));
-      const mockToken = `${header}.${payload}.mocksignature`;
-      
-      // Delay to simulate network
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setToken(mockToken);
-    } catch {
-      setError('Authentication failed.');
+      const res = await api.login(email, password);
+      setToken(res.token);
+    } catch (err: any) {
+      setError(err.message || 'Authentication failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -50,19 +41,12 @@ export function Login() {
     setError(null);
     setShowGoogleModal(false);
     try {
-      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-      const payload = btoa(JSON.stringify({
-        sub: selectedEmail.split('@')[0],
-        email: selectedEmail,
-        role: loginRole,
-        licenseActive: true,
-      }));
-      const mockToken = `${header}.${payload}.mocksignature`;
-
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      setToken(mockToken);
-    } catch {
-      setError('Google Authentication failed.');
+      const name = selectedEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, ' ');
+      const formattedName = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      const res = await api.googleLogin(selectedEmail, formattedName, loginRole);
+      setToken(res.token);
+    } catch (err: any) {
+      setError(err.message || 'Google Authentication failed.');
     } finally {
       setLoading(false);
     }
@@ -73,16 +57,16 @@ export function Login() {
       {/* Brand panel (Left Side on Large Screens) */}
       <div className="lg:w-1/2 bg-zinc-950 text-white p-12 flex flex-col justify-between relative overflow-hidden">
         {/* Signal waves at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 text-zinc-600">
+        <div className="absolute bottom-0 left-0 right-0 h-24 text-zinc-700">
           <SignalWaves className="w-full h-full" opacity={1} />
         </div>
         {/* Neural art — top right */}
-        <div className="absolute top-0 right-0 w-64 h-64 text-zinc-600">
+        <div className="absolute top-0 right-0 w-64 h-64 text-zinc-700">
           <NeuralArt className="w-full h-full" opacity={1} />
         </div>
         {/* Thinking figure — reacts to auth loading/error */}
-        <div className="absolute bottom-16 right-16 w-40 h-52 text-zinc-500">
-          <ThinkingFigure className="w-full h-full" opacity={1} isThinking={isLoading} hasError={!!error} />
+        <div className="absolute bottom-12 right-12 w-48 h-60 text-zinc-600">
+          <ThinkingFigure className="w-full h-full" opacity={1} isThinking={isLoading} hasError={!!error} isHiding={isPasswordFocused} />
         </div>
 
         <div className="flex items-center gap-3 relative z-10">
@@ -151,9 +135,9 @@ export function Login() {
 
           <form onSubmit={handleCredentialsSubmit} className="space-y-5">
             <FormField
-              label="Email Address"
-              type="email"
-              placeholder="e.g. developer@ecommer.dev"
+              label="Email Address or Username"
+              type="text"
+              placeholder="e.g. developer@ecommer.dev or admin"
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
@@ -164,6 +148,8 @@ export function Login() {
               placeholder="••••••••"
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onFocus={() => setIsPasswordFocused(true)}
+              onBlur={() => setIsPasswordFocused(false)}
               required
             />
             

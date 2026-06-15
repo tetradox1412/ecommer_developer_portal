@@ -10,7 +10,7 @@ import {
   ShareNetwork, 
   IdentificationCard
 } from '@phosphor-icons/react';
-import { CollaboratingFigure } from '../../components/ui/LineArt';
+import { ManifestBuilderFigure } from '../../components/ui/LineArt';
 
 // Local Custom FormField to enable full premium style and light/dark theme compatibility
 interface LocalFormFieldProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
@@ -229,20 +229,23 @@ ${deps}
   return (
     <div className="min-h-full bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 flex flex-col p-6 gap-6 transition-colors duration-300">
       {/* Top Header */}
-      <header className="shrink-0 border-b border-zinc-200 dark:border-zinc-800 pb-5 relative overflow-hidden">
-        <div className="absolute left-0 top-0 h-full w-20 text-zinc-300 dark:text-zinc-700 pointer-events-none hidden lg:block">
-          <CollaboratingFigure
+      <header className="shrink-0 border-b border-zinc-200 dark:border-zinc-800 pb-8 relative">
+        <div className="absolute right-6 bottom-[-14px] w-32 h-24 text-zinc-500 dark:text-zinc-500 pointer-events-none hidden xl:block">
+          <ManifestBuilderFigure
             className="w-full h-full"
-            opacity={1}
+            opacity={0.85}
             isActive={validationErrors.length > 0}
+            hasError={validationErrors.length > 0}
           />
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white font-sans">
+        <div className="relative z-10 flex-1">
+          <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white font-sans">
           Manifest Builder
-        </h1>
-        <p className="text-zinc-500 dark:text-zinc-400 mt-1.5 text-sm font-medium">
-          Generate production-ready XML deployment manifests and visualize dependency topologies.
-        </p>
+          </h1>
+          <p className="text-zinc-500 dark:text-zinc-400 mt-1.5 text-sm font-medium">
+            Generate production-ready XML deployment manifests and visualize dependency topologies.
+          </p>
+        </div>
       </header>
 
       {/* Grid view */}

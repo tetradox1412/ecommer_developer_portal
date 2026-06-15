@@ -71,3 +71,8 @@ export default defineConfig([
   },
 ])
 ```
+
+## Project docs
+
+- [DSL syntax guide](./docs/dsl-syntax.md)
+- [Takeover and architecture guide](./docs/takeover-architecture.md)

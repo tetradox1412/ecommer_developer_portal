@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useTicketStore } from '../../store/ticketStore';
 import { TicketCard } from '../../components/modules/TicketCard';
-import { ArrowClockwise, WarningCircle, Ticket } from '@phosphor-icons/react';
+import { ArrowClockwise, WarningCircle } from '@phosphor-icons/react';
 import { ReviewingFigure } from '../../components/ui/LineArt';
 
 type Tab = 'ALL' | 'OPEN' | 'MINE';
@@ -53,16 +53,17 @@ export function TicketInbox() {
     <div className="min-h-full w-full bg-zinc-50/50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
       <div className="p-8 max-w-5xl mx-auto w-full flex flex-col h-full">
         {/* Header Block */}
-        <header className="mb-8 flex justify-between items-start gap-4 relative overflow-hidden">
-          <div className="absolute left-0 top-0 h-full w-20 text-zinc-300 dark:text-zinc-700 pointer-events-none hidden md:block">
+        <header className="mb-8 flex justify-between items-start gap-4 pb-8 relative">
+          <div className="absolute right-36 bottom-[-23px] h-24 w-20 text-zinc-500 dark:text-zinc-500 pointer-events-none hidden xl:block">
             <ReviewingFigure
               className="w-full h-full"
-              opacity={1}
+              opacity={0.85}
               isReviewing={isLoading}
               isComplete={filteredTickets.length > 0 && !isLoading}
+              isEmpty={filteredTickets.length === 0 && !isLoading}
             />
           </div>
-          <div>
+          <div className="relative z-10 flex-1">
             <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight font-sans">
               Support Tickets
             </h1>
@@ -70,7 +71,7 @@ export function TicketInbox() {
               Review and manage developer tickets. Coordinate support requests from SaaS tenants and partner integrations.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 relative z-10 md:pl-4">
             {/* Refresh Button */}
             <button 
               onClick={fetchTickets} 
@@ -131,8 +132,12 @@ export function TicketInbox() {
           </div>
         ) : filteredTickets.length === 0 ? (
           <div className="text-center py-16 px-4 bg-white dark:bg-zinc-950/15 border border-zinc-200 dark:border-zinc-900 rounded-2xl text-zinc-500 dark:text-zinc-400 flex flex-col items-center justify-center gap-4 shadow-sm select-none">
-            <div className="w-12 h-12 rounded-full bg-zinc-150 dark:bg-zinc-900 flex items-center justify-center text-zinc-450 dark:text-zinc-550 border border-zinc-200 dark:border-zinc-850">
-              <Ticket size={24} className="text-zinc-400 dark:text-zinc-500" />
+            <div className="w-32 h-44 text-zinc-400 dark:text-zinc-650 transition-colors">
+              <ReviewingFigure
+                className="w-full h-full"
+                opacity={0.85}
+                isEmpty={true}
+              />
             </div>
             <div className="flex flex-col gap-1">
               <p className="font-semibold text-zinc-800 dark:text-zinc-200 font-sans">No tickets found</p>

@@ -91,11 +91,11 @@ export function Marketplace() {
       {/* Hero */}
       <div className="relative overflow-hidden bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900 px-6 pt-12 pb-10">
         {/* Walking figures background art — quickens when filtered */}
-        <div className="absolute bottom-0 left-0 right-0 h-36 text-zinc-400 dark:text-zinc-600">
+        <div className="absolute bottom-0 left-0 right-0 h-36 text-zinc-600 dark:text-zinc-500">
           <WalkingFigures className="w-full h-full" opacity={1} searchActive={search.length > 0 || activeCategory !== 'All'} />
         </div>
         {/* Neural art top right */}
-        <div className="absolute top-0 right-0 w-72 h-full text-zinc-300 dark:text-zinc-700">
+        <div className="absolute top-0 right-0 w-72 h-full text-zinc-500 dark:text-zinc-600">
           <NeuralArt className="w-full h-full" opacity={1} />
         </div>
         <div className="relative z-10 max-w-2xl">
