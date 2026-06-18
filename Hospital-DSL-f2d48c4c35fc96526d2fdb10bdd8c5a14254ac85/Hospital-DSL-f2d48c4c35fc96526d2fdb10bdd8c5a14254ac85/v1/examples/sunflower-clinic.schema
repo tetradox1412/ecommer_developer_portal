@@ -1,0 +1,187 @@
+// Sunflower Clinic — HospitalDSL v3
+Hospital SunflowerClinic {
+
+  // ── Data Modules ─────────────────────────────────────────────
+
+  Module Department {
+    Label: "Departments";
+    Icon: "🏢";
+    Color: teal;
+    Fields {
+      name:        String  required  label "Department Name";
+      head:        String  optional  label "Head of Department";
+      description: Text    optional  label "Description";
+    }
+    APIs {
+      List   /all { name: all; roles: Admin, Doctor; }
+      Get    /:id { name: get; roles: Admin, Doctor; }
+      Create /    { name: new; roles: Admin; }
+      Update /:id { name: edit; roles: Admin; }
+      Delete /:id { name: del; roles: Admin; }
+    }
+  }
+
+  Module Doctor {
+    Label: "Doctors";
+    Icon: "👨‍⚕️";
+    Color: green;
+    Fields {
+      name:           String  required  label "Full Name";
+      specialization: String  required  label "Specialization";
+      department:     Department required label "Department";
+      phone:          Phone   optional  label "Phone";
+      email:          Email   optional  label "Email";
+      available:      Boolean optional  label "Accepting Patients"  default "true";
+      workingDays:    String  optional  label "Working Days"  default "Mon-Fri";
+      startTime:      String  optional  label "Start Time"   default "09:00";
+      endTime:        String  optional  label "End Time"     default "17:00";
+    }
+    APIs {
+      List   /all { name: all; roles: Admin, Patient; }
+      Get    /:id { name: get; roles: Admin, Patient; }
+      Create /    { name: new; roles: Admin; }
+      Update /:id { name: edit; roles: Admin; }
+      Delete /:id { name: del; roles: Admin; }
+      
+      Get    /me  { name: me; roles: {Doctor, filter id = auth.id}; }
+      Update /me  { name: my; roles: {Doctor, filter id = auth.id}; }
+    }
+  }
+
+  Module Patient {
+    Label: "Patients";
+    Icon: "🧑‍⚕️";
+    Color: blue;
+    Fields {
+      name:        String  required  label "Full Name";
+      age:         Number  required  label "Age"  min 0  max 150;
+      gender:      String  optional  label "Gender"  options "Male","Female","Other";
+      bloodType:   String  optional  label "Blood Type"  options "A+","A-","B+","B-","O+","O-","AB+","AB-";
+      phone:       Phone   optional  label "Phone";
+      email:       Email   optional  label "Email";
+      address:     Text    optional  label "Address";
+      allergies:   Text    optional  label "Known Allergies";
+      conditions:  Text    optional  label "Existing Conditions";
+    }
+    APIs {
+      List   /all { name: all; roles: Admin, Doctor; }
+      Get    /:id { name: get; roles: Admin, Doctor; }
+      Create /    { name: new; roles: Admin; }
+      Update /:id { name: edit; roles: Admin; }
+      Delete /:id { name: del; roles: Admin; }
+      
+      Get    /me  { name: me; roles: {Patient, filter id = auth.id}; }
+      Update /me  { name: my; roles: {Patient, filter id = auth.id}; }
+
+      Get    /:id/history {
+        name: history;
+        roles: Admin, Doctor;
+        expand: appointments, prescriptions, labReports;
+      }
+    }
+  }
+
+  Module Appointment {
+    Label: "Appointments";
+    Icon: "📅";
+    Color: purple;
+    Fields {
+      patient:      Patient required  label "Patient";
+      doctor:       Doctor  required  label "Doctor";
+      date:         Date    required  label "Date";
+      timeSlot:     String  required  label "Time Slot";
+      status:       String  optional  label "Status"  default "Pending"  options "Pending","Approved","Rejected","Completed","Cancelled";
+      reason:       Text    optional  label "Reason for Visit";
+      notes:        Text    optional  label "Doctor Notes";
+    }
+    APIs {
+      List   /all        { name: all; roles: Admin; }
+      Get    /:id        { name: get; roles: Admin; }
+      Create /           { name: new; roles: Admin; }
+      Update /:id        { name: edit; roles: Admin; }
+      Delete /:id        { name: del; roles: Admin; }
+
+      List   /my         { name: my; roles: {Patient, filter patient = auth.id}; }
+      Get    /my/:id     { name: myGet; roles: {Patient, filter patient = auth.id}; }
+      Create /book       { name: book; roles: {Patient, set patient = auth.id}; }
+      Update /cancel/:id { name: cancel; roles: {Patient, filter patient = auth.id}; set status = "Cancelled"; }
+
+      List   /schedule   { name: schedule; roles: {Doctor, filter doctor = auth.id}; }
+      Get    /sched/:id  { name: schedGet; roles: {Doctor, filter doctor = auth.id}; }
+      Update /approve/:id{ name: approve; roles: {Doctor, filter doctor = auth.id}; set status = "Approved"; }
+      Update /reject/:id { name: reject; roles: {Doctor, filter doctor = auth.id}; set status = "Rejected"; }
+      Update /status/:id { name: changeStatus; roles: {Doctor, filter doctor = auth.id}; }
+      Update /reschedule/:id { name: reschedule; roles: {Doctor, filter doctor = auth.id}; }
+
+      Stats /admin/stats {
+        name: adminStats;
+        roles: Admin;
+        totalAppointments:     count Appointment;
+        pendingAppointments:   count Appointment(status: "Pending");
+        completedAppointments: count Appointment(status: "Completed");
+      }
+    }
+  }
+
+  Module Prescription {
+    Label: "Prescriptions";
+    Icon: "💊";
+    Color: orange;
+    Fields {
+      patient:      Patient required  label "Patient";
+      doctor:       Doctor  required  label "Doctor";
+      date:         Date    required  label "Date";
+      diagnosis:    Text    required  label "Diagnosis";
+      medications:  Text    required  label "Medications";
+      dosage:       Text    optional  label "Dosage Instructions";
+      followUp:     Date    optional  label "Follow-up Date";
+      notes:        Text    optional  label "Additional Notes";
+    }
+    APIs {
+      List   /all        { name: all; roles: Admin; }
+      Get    /:id        { name: get; roles: Admin, Doctor, {Patient, filter patient = auth.id}; }
+      
+      List   /my         { name: my; roles: {Patient, filter patient = auth.id}; }
+      
+      List   /doctor     { name: doctor; roles: {Doctor, filter doctor = auth.id}; }
+      Create /write      { name: write; roles: {Doctor, set doctor = auth.id}; }
+    }
+  }
+
+  Module LabReport {
+    Label: "Lab Reports";
+    Icon: "🧪";
+    Color: red;
+    Fields {
+      patient:      Patient required  label "Patient";
+      doctor:       Doctor  required  label "Doctor";
+      testName:     String  required  label "Test Name";
+      testDate:     Date    required  label "Test Date";
+      result:       Text    required  label "Test Result";
+      normalRange:  String  optional  label "Normal Range";
+      status:       String  optional  label "Status"  default "Pending"  options "Pending","Ready","Reviewed";
+      notes:        Text    optional  label "Notes";
+    }
+    APIs {
+      List   /all        { name: all; roles: Admin, Doctor, {Patient, filter patient = auth.id}; }
+      Get    /:id        { name: get; roles: Admin, Doctor, {Patient, filter patient = auth.id}; }
+      Create /           { name: new; roles: Doctor; }
+      Update /:id        { name: edit; roles: Doctor; }
+    }
+  }
+
+  // ── Role Definitions ─────────────────────────────────────────
+
+  Role Patient { Me: Patient; }
+  Role Doctor  { Me: Doctor; }
+  Role Admin   { }
+
+  // ── Auth ─────────────────────────────────────────────────────
+
+  Auth {
+    Type: JWT;
+    Expiry: "7d";
+    Roles: Admin, Doctor, Patient;
+  }
+
+}

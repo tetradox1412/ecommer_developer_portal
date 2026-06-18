@@ -1,0 +1,183 @@
+import "sunflower-clinic.schema";
+
+LoginGroups {
+  Group "Patient" {
+    roles:          Patient;
+    selfRegister:   true;
+    registerFields: name, age, gender, bloodType, phone, email, password;
+  }
+  Group "Staff" {
+    roles:        Admin, Doctor;
+    selfRegister: false;
+  }
+}
+
+// ── Patient Portal ───────────────────────────────────────
+Portal PatientPortal {
+  for: Patient;
+
+  Page MyAppointments {
+    Route: "/";
+    Title: "My Appointments";
+
+    Table {
+      from:    Appointment.my;
+      columns: date, doctor, reason, status;
+      View {
+        get:    Appointment.myGet;
+        fields: doctor, date, reason, notes, status;
+      }
+      actions: Appointment.cancel "Cancel" { onSuccess: refresh; };
+    }
+
+    Form {
+      submit:    Appointment.book;
+      fields:    doctor, date, timeSlot, reason;
+      onSuccess: toast "Appointment booked!";
+      Field doctor { from: Doctor.all; }
+    }
+  }
+
+  Page MyPrescriptions {
+    Route: "/prescriptions";
+
+    Table {
+      from:    Prescription.my;
+      columns: date, doctor, diagnosis, medications;
+      View {
+        get:    Prescription.get;
+        fields: doctor, date, diagnosis, medications, dosage, followUp, notes;
+      }
+    }
+  }
+
+  Page MyProfile {
+    Route: "/profile";
+
+    Detail {
+      from:   Patient.me;
+      fields: name, age, gender, bloodType, phone, email, address;
+      Edit {
+        submit: Patient.my;
+        fields: phone, email, address;
+      }
+    }
+  }
+}
+
+// ── Doctor Portal ────────────────────────────────────────
+Portal DoctorPortal {
+  for: Doctor;
+
+  Page Schedule {
+    Route: "/";
+    Title: "My Schedule";
+
+    Calendar {
+      from:       Appointment.schedule;
+      dateField:  date;
+      labelField: patient;
+      update:     Appointment.reschedule;
+      View {
+        get:    Appointment.schedGet;
+        fields: patient, date, reason, status;
+      }
+      actions:
+        Appointment.approve "Approve" { onSuccess: refresh; },
+        Appointment.reject  "Reject"  { onSuccess: refresh; };
+    }
+  }
+
+  Page Prescriptions {
+    Route: "/prescriptions";
+
+    Table {
+      from:    Prescription.doctor;
+      columns: date, patient, diagnosis;
+      View {
+        get:    Prescription.get;
+        fields: patient, date, diagnosis, medications, dosage, followUp, notes;
+      }
+    }
+
+    Form WritePrescription {
+      submit:    Prescription.write;
+      fields:    patient, date, diagnosis, medications, dosage, followUp;
+      onSuccess: toast "Prescription saved";
+      Field patient { from: Patient.all; }
+    }
+  }
+
+  Page MyProfile {
+    Route: "/profile";
+    Detail {
+      from:   Doctor.me;
+      fields: name, specialization, department, phone, email, workingDays;
+      Edit {
+        submit: Doctor.my;
+        fields: phone, email, workingDays;
+      }
+    }
+  }
+}
+
+// ── Admin Portal ─────────────────────────────────────────
+Portal AdminPortal {
+  for: Admin;
+
+  Page Dashboard {
+    Route: "/";
+
+    MetricGrid {
+      show: 
+        Appointment.adminStats.totalAppointments, 
+        Appointment.adminStats.pendingAppointments, 
+        Appointment.adminStats.completedAppointments;
+    }
+
+    Table RecentAppointments {
+      from:    Appointment.all;
+      columns: date, patient, doctor, status;
+      View {
+        get:    Appointment.get;
+        fields: patient, doctor, date, status, reason;
+      }
+      actions:
+        Appointment.del "Delete" { onSuccess: refresh; };
+    }
+  }
+
+  Page Doctors {
+    Route: "/doctors";
+    Table {
+      from:    Doctor.all;
+      columns: name, specialization, available;
+      View {
+        get:    Doctor.get;
+        fields: name, specialization, department, phone, email;
+      }
+      Edit {
+        submit: Doctor.edit;
+        fields: specialization, department, available;
+      }
+      actions: Doctor.del "Delete" { onSuccess: refresh; };
+    }
+  }
+
+  Page Patients {
+    Route: "/patients";
+    Table {
+      from:    Patient.all;
+      columns: name, age, gender, phone;
+      View {
+        get:    Patient.get;
+        fields: name, age, gender, phone, address, allergies, conditions;
+      }
+      Edit {
+        submit: Patient.edit;
+        fields: phone, address, allergies;
+      }
+      actions: Patient.del "Delete" { onSuccess: refresh; };
+    }
+  }
+}
