@@ -36,6 +36,7 @@
   --color-scrollbar-track: #f4f4f5; /* zinc-100 */
   --color-scrollbar-thumb: #d4d4d8; /* zinc-300 */
   --color-scrollbar-thumb-hover: #a1a1aa; /* zinc-400 */
+  --grid-color: rgba(0, 0, 0, 0.025);
   
   color-scheme: light dark;
 }
@@ -46,6 +47,7 @@
     --color-scrollbar-track: #18181b; /* zinc-900 */
     --color-scrollbar-thumb: #3f3f46; /* zinc-700 */
     --color-scrollbar-thumb-hover: #52525b; /* zinc-600 */
+    --grid-color: rgba(255, 255, 255, 0.02);
   }
 }
 
@@ -53,6 +55,15 @@
   --color-scrollbar-track: #18181b; /* zinc-900 */
   --color-scrollbar-thumb: #3f3f46; /* zinc-700 */
   --color-scrollbar-thumb-hover: #52525b; /* zinc-600 */
+  --grid-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Background grid utility */
+.grid-bg {
+  background-image: 
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 /* Specific Component Transitions */
