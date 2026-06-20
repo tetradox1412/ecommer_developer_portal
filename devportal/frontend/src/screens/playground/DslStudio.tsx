@@ -11,6 +11,9 @@ import {
   CheckCircle,
   XCircle,
   Warning,
+  Database,
+  ShieldCheck,
+  Cpu
 } from '@phosphor-icons/react';
 
 // ── Placeholders ──────────────────────────────────────────────────────────────
@@ -447,16 +450,21 @@ export function DslStudio() {
           {/* Info cards */}
           <div className="shrink-0 grid grid-cols-3 gap-3">
             {[
-              { icon: '🏥', label: 'Modules',  desc: 'Entities + CRUD APIs' },
-              { icon: '🔐', label: 'Auth',     desc: 'JWT + Role-based'     },
-              { icon: '⚛️', label: 'Output',   desc: 'Spring Boot + React'  },
-            ].map(c => (
-              <div key={c.label} className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 flex flex-col gap-1 bg-white dark:bg-zinc-950">
-                <span className="text-lg">{c.icon}</span>
-                <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 font-sans">{c.label}</span>
-                <span className="text-[11px] text-zinc-500">{c.desc}</span>
-              </div>
-            ))}
+              { icon: Database, label: 'Modules',  desc: 'Entities + CRUD APIs', color: 'text-blue-500 dark:text-blue-400' },
+              { icon: ShieldCheck, label: 'Auth',     desc: 'JWT + Role-based', color: 'text-emerald-500 dark:text-emerald-400' },
+              { icon: Cpu, label: 'Output',   desc: 'Spring Boot + React', color: 'text-purple-500 dark:text-purple-400' },
+            ].map(c => {
+              const CardIcon = c.icon;
+              return (
+                <div key={c.label} className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 flex flex-col gap-2 bg-white dark:bg-zinc-900/50 shadow-xs hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-200">
+                  <CardIcon className={`w-5 h-5 ${c.color}`} weight="bold" />
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 font-sans">{c.label}</span>
+                    <span className="text-[10px] text-zinc-500 mt-0.5">{c.desc}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
