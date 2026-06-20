@@ -181,7 +181,11 @@ function PortalLayout({ children }: { children?: React.ReactNode }) {
               <NavLink
                 key={item.path}
                 to={item.path}
-                onClick={() => setIsSidebarOpen(false)}
+                onClick={() => {
+                  if (window.innerWidth < 1024) {
+                    setIsSidebarOpen(false);
+                  }
+                }}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 text-sm font-medium ${
                     isActive
