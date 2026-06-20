@@ -418,14 +418,16 @@ export function DslStudio() {
                     key={i}
                     className="px-4 py-2 flex items-start gap-3 bg-white dark:bg-zinc-950 cursor-pointer hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
                     onClick={() => {
-                      // Jump to the line in the schema editor
-                      if (schemaEditorRef.current && activeTab === 'schema') {
-                        schemaEditorRef.current.revealLineInCenter(e.line);
-                        schemaEditorRef.current.setPosition({ lineNumber: e.line, column: e.column });
-                        schemaEditorRef.current.focus();
-                      } else {
-                        setActiveTab('schema');
-                      }
+                      setActiveTab('schema');
+                      setTimeout(() => {
+                        if (schemaEditorRef.current) {
+                          const line = Math.max(1, Math.min(e.line, schemaEditorRef.current.getModel()?.getLineCount() ?? 1));
+                          const col = Math.max(1, e.column);
+                          schemaEditorRef.current.revealLineInCenter(line);
+                          schemaEditorRef.current.setPosition({ lineNumber: line, column: col });
+                          schemaEditorRef.current.focus();
+                        }
+                      }, 100);
                     }}
                   >
                     <span className={`shrink-0 text-[10px] font-bold font-mono px-1.5 py-0.5 rounded mt-0.5
