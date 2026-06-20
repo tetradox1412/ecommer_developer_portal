@@ -153,16 +153,21 @@ export function DslStudio() {
     const model = schemaEditor.getModel();
     if (!model) return;
 
-    const markers: Monaco.editor.IMarkerData[] = errors.map(e => ({
-      startLineNumber: e.line,
-      endLineNumber:   e.line,
-      startColumn:     e.column,
-      endColumn:       model.getLineMaxColumn(Math.min(e.line, model.getLineCount())),
-      message:         e.message,
-      severity: e.severity === 'error'
-        ? monaco.MarkerSeverity.Error
-        : monaco.MarkerSeverity.Warning,
-    }));
+    const markers: Monaco.editor.IMarkerData[] = errors.map(e => {
+      const line = Math.max(1, Math.min(e.line, model.getLineCount()));
+      const maxCol = model.getLineMaxColumn(line);
+      const col = Math.max(1, Math.min(e.column, maxCol));
+      return {
+        startLineNumber: line,
+        endLineNumber:   line,
+        startColumn:     col,
+        endColumn:       maxCol,
+        message:         e.message,
+        severity: e.severity === 'error'
+          ? monaco.MarkerSeverity.Error
+          : monaco.MarkerSeverity.Warning,
+      };
+    });
 
     monaco.editor.setModelMarkers(model, 'hospital-dsl', markers);
   }, []);
