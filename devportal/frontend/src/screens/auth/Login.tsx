@@ -10,7 +10,7 @@ export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const [loginRole, setLoginRole] = useState<'DEVELOPER_PARTNER' | 'CUSTOMER'>('DEVELOPER_PARTNER');
+  const loginRole = 'DEVELOPER_PARTNER';
   const [showGoogleModal, setShowGoogleModal] = useState(false);
 
   const mockGoogleAccounts = [
@@ -93,39 +93,12 @@ export function Login() {
         <div className="w-full max-w-md space-y-8">
           <header className="space-y-3">
             <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white transition-all duration-300">
-              {loginRole === 'DEVELOPER_PARTNER' ? 'Developer Console' : 'Marketplace'}
+              Developer Console
             </h2>
             <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium transition-all duration-300">
-              {loginRole === 'DEVELOPER_PARTNER' 
-                ? 'Sign in to manage your extensions and integrations.'
-                : 'Sign in to browse and install extensions.'}
+              Sign in to manage your extensions and integrations.
             </p>
           </header>
-
-          <div className="flex p-1 space-x-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl shadow-inner dark:shadow-none">
-            <button
-              onClick={() => setLoginRole('DEVELOPER_PARTNER')}
-              type="button"
-              className={`w-full py-2.5 text-sm font-bold rounded-lg transition-all duration-200 cursor-pointer ${
-                loginRole === 'DEVELOPER_PARTNER'
-                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-600'
-                  : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
-              }`}
-            >
-              Developer Partner
-            </button>
-            <button
-              onClick={() => setLoginRole('CUSTOMER')}
-              type="button"
-              className={`w-full py-2.5 text-sm font-bold rounded-lg transition-all duration-200 cursor-pointer ${
-                loginRole === 'CUSTOMER'
-                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-600'
-                  : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
-              }`}
-            >
-              Customer
-            </button>
-          </div>
 
           {error && (
             <div className="p-4 bg-red-500/10 border border-red-500/20 dark:border-red-500/30 rounded-xl text-red-600 dark:text-red-400 text-sm font-medium animate-pulse">
