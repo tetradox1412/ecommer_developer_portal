@@ -214,11 +214,11 @@ export function DslStudio() {
   const handleGenerate = async () => {
     setGenStatus('loading');
     setLogs([]);
-    addLog('▶  Initializing DSL engine…');
-    addLog('⏳  Parsing schema and views…');
+    addLog('[INFO] Initializing DSL engine...');
+    addLog('[INFO] Parsing schema and views...');
     try {
       await api.generateDslProject(schema, views);
-      addLog('✅  Generation complete — your project ZIP is downloading.', 'success');
+      addLog('[SUCCESS] Generation complete — your project ZIP is downloading.', 'success');
       setGenStatus('success');
     } catch (err: unknown) {
       const raw = err instanceof Error ? err.message : String(err);
