@@ -1,9 +1,11 @@
 package com.devportal.bff.controller;
 
+import com.devportal.bff.model.SubmissionDto;
 import com.devportal.bff.model.UserActivityEntity;
 import com.devportal.bff.model.UserEntity;
 import com.devportal.bff.repository.UserRepository;
 import com.devportal.bff.security.JwtUser;
+import com.devportal.bff.service.SubmissionService;
 import com.devportal.bff.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class DeveloperController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final SubmissionService submissionService;
 
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal JwtUser principal) {
@@ -71,5 +74,12 @@ public class DeveloperController {
         log.info("Fetching activities history for user ID: {}", principal.id());
         List<UserActivityEntity> activities = userService.getActivities(principal.id());
         return ResponseEntity.ok(activities);
+    }
+
+    @GetMapping("/submissions")
+    public ResponseEntity<List<SubmissionDto>> getSubmissions(@AuthenticationPrincipal JwtUser principal) {
+        log.info("Fetching submissions history for user ID: {}", principal.id());
+        List<SubmissionDto> submissions = submissionService.getSubmissionsForDeveloper(principal.id());
+        return ResponseEntity.ok(submissions);
     }
 }
