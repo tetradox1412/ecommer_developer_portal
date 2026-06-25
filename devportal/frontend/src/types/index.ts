@@ -1,3 +1,5 @@
+export * from './workspace';
+
 // ── Auth ──────────────────────────────────────────────────────
 export interface JwtUser {
   sub: string;
@@ -16,6 +18,10 @@ export interface Submission {
   status: SubmissionStatus;
   submittedAt: string;
   errorMessage?: string;
+  displayName?: string;
+  category?: string;
+  industry?: string;
+  iconName?: string;
 }
 
 export interface SubmitDslRequest {
@@ -23,6 +29,17 @@ export interface SubmitDslRequest {
   version: string;
   dslCode: string;
   manifestXml: string;
+  displayName?: string;
+  longDescription?: string;
+  category?: string;
+  industry?: string;
+  iconName?: string;
+  tagline?: string;
+  color?: string;
+  features?: string;
+  price?: number;
+  changelog?: string;
+  releaseNotes?: string;
 }
 
 // ── API Explorer ──────────────────────────────────────────────
