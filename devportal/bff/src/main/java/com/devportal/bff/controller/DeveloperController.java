@@ -1,6 +1,7 @@
 package com.devportal.bff.controller;
 
 import com.devportal.bff.model.SubmissionDto;
+import com.devportal.bff.model.VersionInfoDto;
 import com.devportal.bff.model.UserActivityEntity;
 import com.devportal.bff.model.UserEntity;
 import com.devportal.bff.repository.UserRepository;
@@ -81,5 +82,14 @@ public class DeveloperController {
         log.info("Fetching submissions history for user ID: {}", principal.id());
         List<SubmissionDto> submissions = submissionService.getSubmissionsForDeveloper(principal.id());
         return ResponseEntity.ok(submissions);
+    }
+
+    @GetMapping("/submissions/{moduleName}/versions")
+    public ResponseEntity<List<VersionInfoDto>> getModuleVersions(
+            @AuthenticationPrincipal JwtUser principal,
+            @PathVariable String moduleName) {
+        log.info("Fetching version history for module {} (developer {})", moduleName, principal.id());
+        List<VersionInfoDto> versions = submissionService.getVersionsForModule(principal.id(), moduleName);
+        return ResponseEntity.ok(versions);
     }
 }
