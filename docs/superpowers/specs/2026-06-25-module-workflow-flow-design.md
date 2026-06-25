@@ -381,7 +381,7 @@ Implemented via a new `SubmissionRepository.findByDeveloperIdAndModuleNameOrderB
 
 Version tracking is **submission-centric** in the dev portal (each submission = one version attempt) and aligns with Giolit Admin's `ModuleVersion` on promotion to the catalog:
 
-- **In the dev portal:** every `POST /bff/dsl/submit` with a `(moduleName, version)` pair is a version record. The `(moduleName, version)` combination should be **unique among non-terminal submissions** (a validation in `SubmissionService`: reject a new submission whose `(moduleName, version)` already exists with status `PENDING`/`COMPILING`/`ACTIVE`, unless it's a re-submit after `ERROR`). This mirrors Giolit Admin's `module_versions` unique constraint.
+- **In the dev portal:** every `POST /bff/dsl/submit` with a `(moduleName, version)` pair is a version record. The `(moduleName, version)` combination should be **unique while occupying** (a validation in `SubmissionService`: reject a new submission whose `(moduleName, version)` already exists with status `PENDING`/`COMPILING`/`ACTIVE`; a prior `ERROR`/`INACTIVE` frees the slot so the version can be retried). This mirrors Giolit Admin's `module_versions` unique constraint.
 - **History view** groups submissions by `moduleName`, showing each version's status and timestamp, with a "current latest" badge on the highest `ACTIVE` version.
 - **On promotion** (future, out of scope here): Giolit Admin ingests a submission into its `modules` + `module_versions` tables; the dev portal's `changelog`/`releaseNotes` map directly onto `ModuleVersion.changelog`/`releaseNotes`.
 

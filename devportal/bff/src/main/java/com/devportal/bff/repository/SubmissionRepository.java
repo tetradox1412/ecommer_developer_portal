@@ -10,6 +10,6 @@ public interface SubmissionRepository extends JpaRepository<SubmissionEntity, St
     List<SubmissionEntity> findByDeveloperIdAndModuleNameOrderBySubmittedAtDesc(
         String developerId, String moduleName);
 
-    boolean existsByModuleNameAndVersionAndStatusNotIn(
+    boolean existsByModuleNameAndVersionAndStatusIn(
         String moduleName, String version, List<String> statuses);
 }

@@ -20,7 +20,7 @@ public class SubmissionService {
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     /** Statuses that mean a (moduleName, version) slot is still "taken". */
-    private static final List<String> NON_TERMINAL_STATUSES =
+    private static final List<String> OCCUPYING_STATUSES =
         List.of("PENDING", "COMPILING", "ACTIVE");
 
     public List<SubmissionDto> getSubmissionsForDeveloper(String developerId) {
@@ -31,9 +31,11 @@ public class SubmissionService {
     }
 
     public String createSubmission(String developerId, SubmitDslRequest request) {
-        // Enforce version uniqueness among non-terminal submissions.
-        if (repository.existsByModuleNameAndVersionAndStatusNotIn(
-                request.moduleName(), request.version(), NON_TERMINAL_STATUSES)) {
+        // Enforce version uniqueness among occupying submissions.
+        // A slot is "taken" while a submission is PENDING, COMPILING, or ACTIVE.
+        // ERROR/INACTIVE submissions free the slot so the version can be retried.
+        if (repository.existsByModuleNameAndVersionAndStatusIn(
+                request.moduleName(), request.version(), OCCUPYING_STATUSES)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                 "A submission for " + request.moduleName() + " v" + request.version()
                 + " already exists. Bump the version.");
