@@ -5,6 +5,7 @@ import { useSubmissionStore } from '../../../store/submissionStore';
 import { useStatusStream } from '../../../hooks/useStatusStream';
 import { buildPackageZip, parsePackageZip, downloadBlob } from '../../../lib/package-io';
 import { buildManifestXmlString } from '../../manifest/manifestXml';
+import { validateSemver } from '../../../lib/semver';
 import type { StatusEvent, SubmitDslRequest } from '../../../types';
 import { ArrowLeft, DownloadSimple, UploadSimple, Lightning, CheckCircle, XCircle, CircleNotch, Warning } from '@phosphor-icons/react';
 
@@ -24,7 +25,7 @@ export function ReviewSubmitStep() {
   const validationErrors = useMemo(() => {
     const e: string[] = [];
     if (!workspace.manifest.name.trim()) e.push('Module name is empty (Step 2).');
-    if (!/^\d+\.\d+\.\d+/.test(workspace.manifest.version)) e.push('Version is not SemVer (Step 3).');
+    if (!validateSemver(workspace.manifest.version)) e.push('Version is not valid SemVer (Step 3).');
     if (!workspace.metadata.displayName.trim()) e.push('Display name is empty (Step 3).');
     if (!workspace.metadata.industry.trim()) e.push('Industry is empty (Step 3).');
     if (!workspace.dsl.schema.trim()) e.push('DSL schema is empty (Step 1).');
@@ -46,7 +47,12 @@ export function ReviewSubmitStep() {
     const payload: SubmitDslRequest = {
       moduleName: workspace.manifest.name,
       version: workspace.manifest.version,
+      // Keep dslCode as a combined blob for the existing async pipeline (which
+      // still expects a single dslCode string), but ALSO send schema/views
+      // separately so the submission can be rebuilt losslessly from history.
       dslCode: workspace.dsl.schema + '\n\n// --- views ---\n\n' + workspace.dsl.views,
+      dslSchema: workspace.dsl.schema,
+      dslViews: workspace.dsl.views,
       manifestXml,
       displayName: workspace.metadata.displayName,
       longDescription: workspace.metadata.longDescription,

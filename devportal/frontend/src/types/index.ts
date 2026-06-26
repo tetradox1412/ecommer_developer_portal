@@ -22,6 +22,9 @@ export interface Submission {
   category?: string;
   industry?: string;
   iconName?: string;
+  dslSchema?: string;
+  dslViews?: string;
+  manifestXml?: string;
 }
 
 export interface SubmitDslRequest {
@@ -29,6 +32,8 @@ export interface SubmitDslRequest {
   version: string;
   dslCode: string;
   manifestXml: string;
+  dslSchema?: string;
+  dslViews?: string;
   displayName?: string;
   longDescription?: string;
   category?: string;

@@ -29,6 +29,12 @@ public class SubmissionEntity {
     @Column(name = "dsl_code", columnDefinition = "TEXT")
     private String dslCode;
 
+    @Column(name = "dsl_schema", columnDefinition = "TEXT")
+    private String dslSchema;
+
+    @Column(name = "dsl_views", columnDefinition = "TEXT")
+    private String dslViews;
+
     @Column(name = "manifest_xml", columnDefinition = "TEXT")
     private String manifestXml;
 

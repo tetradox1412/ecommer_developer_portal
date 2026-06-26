@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.*;
@@ -30,10 +31,13 @@ public class SubmissionService {
                 .toList();
     }
 
+    @Transactional
     public String createSubmission(String developerId, SubmitDslRequest request) {
         // Enforce version uniqueness among occupying submissions.
         // A slot is "taken" while a submission is PENDING, COMPILING, or ACTIVE.
         // ERROR/INACTIVE submissions free the slot so the version can be retried.
+        // The @Transactional boundary narrows the TOCTOU window between the
+        // existence check and the insert.
         if (repository.existsByModuleNameAndVersionAndStatusIn(
                 request.moduleName(), request.version(), OCCUPYING_STATUSES)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -48,6 +52,8 @@ public class SubmissionService {
                 .moduleName(request.moduleName())
                 .version(request.version())
                 .dslCode(request.dslCode())
+                .dslSchema(request.dslSchema())
+                .dslViews(request.dslViews())
                 .manifestXml(request.manifestXml())
                 .status("PENDING")
                 .displayName(request.displayName())

@@ -17,7 +17,10 @@ public record SubmissionDto(
     String features,
     Double price,
     String changelog,
-    String releaseNotes
+    String releaseNotes,
+    String dslSchema,
+    String dslViews,
+    String manifestXml
 ) {
     public static SubmissionDto from(SubmissionEntity e) {
         return new SubmissionDto(
@@ -37,7 +40,10 @@ public record SubmissionDto(
             e.getFeatures(),
             e.getPrice(),
             e.getChangelog(),
-            e.getReleaseNotes()
+            e.getReleaseNotes(),
+            e.getDslSchema(),
+            e.getDslViews(),
+            e.getManifestXml()
         );
     }
 }

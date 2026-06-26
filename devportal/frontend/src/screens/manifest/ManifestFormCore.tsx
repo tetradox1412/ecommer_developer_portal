@@ -7,6 +7,7 @@ import { ReactFlow, Background, Controls, MiniMap, Handle, Position } from '@xyf
 import '@xyflow/react/dist/style.css';
 import { useTheme } from '../../components/ui/ThemeContext';
 import { buildManifestXmlString, type ManifestApi } from './manifestXml';
+import { validateSemver } from '../../lib/semver';
 import type { ManifestState, ModuleMetadata } from '../../types';
 
 export interface ManifestFormCoreProps {
@@ -122,7 +123,7 @@ export function ManifestFormCore({ manifest, metadata, onChange }: ManifestFormC
       errors.push({ field: 'Context Path', message: `VAL-002: Must be exactly ${expectedContextPath}.`, severity: 'error', tab: 'info' });
     }
     if (!manifest.version.trim()) errors.push({ field: 'Version', message: 'VAL-003: Version cannot be empty.', severity: 'error', tab: 'info' });
-    else if (!/^\d+\.\d+\.\d+/.test(manifest.version)) errors.push({ field: 'Version', message: 'VAL-003: Must be valid SemVer.', severity: 'error', tab: 'info' });
+    else if (!validateSemver(manifest.version)) errors.push({ field: 'Version', message: 'VAL-003: Must be valid SemVer.', severity: 'error', tab: 'info' });
 
     manifest.publicApis.forEach((api, index) => {
       const path = api.path.trim();

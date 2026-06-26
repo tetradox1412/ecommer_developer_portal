@@ -4,6 +4,7 @@ import { WizardStepper } from '../../components/workspace/WizardStepper';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import { buildPackageZip, parsePackageZip, downloadBlob } from '../../lib/package-io';
 import { buildManifestXmlString } from '../manifest/manifestXml';
+import { validateSemver } from '../../lib/semver';
 import type { WizardStep } from '../../types';
 
 export function WorkspaceLayout() {
@@ -13,7 +14,7 @@ export function WorkspaceLayout() {
 
   const completed = useMemo<Record<WizardStep, boolean>>(() => ({
     dsl: workspace.dsl.schema.trim().length > 0,
-    manifest: !!workspace.manifest.name.trim() && /^\d+\.\d+\.\d+/.test(workspace.manifest.version),
+    manifest: !!workspace.manifest.name.trim() && validateSemver(workspace.manifest.version),
     details: !!workspace.metadata.displayName.trim() && !!workspace.metadata.industry.trim(),
     review: false,
   }), [workspace]);

@@ -3,7 +3,22 @@ import type { ManifestState, ModuleMetadata, ManifestApi } from '../../types';
 export type { ManifestApi };
 
 export function escapeXml(s: string): string {
-  return (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return (s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+/**
+ * Wrap arbitrary text in a CDATA section that is safe even if the content
+ * contains the literal `]]>` sequence: that sequence is split across two
+ * adjacent CDATA sections so it can never prematurely terminate the block.
+ */
+function cdata(text: string): string {
+  const safe = text.replace(/]]>/g, ']]]]><![CDATA[>');
+  return `<![CDATA[${safe}]]>`;
 }
 
 /**
@@ -16,11 +31,11 @@ export function buildManifestXmlString(m: ManifestState, meta: ModuleMetadata): 
     .filter((a) => a.path.trim())
     .map((a) => {
       const req = a.requestSchema
-        ? `\n            <requestSchema><![CDATA[${JSON.stringify(a.requestSchema)}]]></requestSchema>` : '';
+        ? `\n            <requestSchema>${cdata(JSON.stringify(a.requestSchema))}</requestSchema>` : '';
       const res = a.responseSchema
-        ? `\n            <responseSchema><![CDATA[${JSON.stringify(a.responseSchema)}]]></responseSchema>` : '';
+        ? `\n            <responseSchema>${cdata(JSON.stringify(a.responseSchema))}</responseSchema>` : '';
       const ex = a.exampleResponse
-        ? `\n            <exampleResponse><![CDATA[${JSON.stringify(a.exampleResponse)}]]></exampleResponse>` : '';
+        ? `\n            <exampleResponse>${cdata(JSON.stringify(a.exampleResponse))}</exampleResponse>` : '';
       return `        <api>
             <path>${a.path.trim()}</path>
             <method>${a.method}</method>

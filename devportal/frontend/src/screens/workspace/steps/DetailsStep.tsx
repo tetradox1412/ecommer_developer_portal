@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../../store/workspaceStore';
 import { FeaturesEditor } from '../../../components/workspace/FeaturesEditor';
@@ -9,7 +10,8 @@ export function DetailsStep() {
   const navigate = useNavigate();
   const { manifest, metadata, setMetadata, setManifest, setCurrentStep } = useWorkspaceStore();
 
-  const setVersion = (v: string) => setManifest({ version: v });
+  // Stable identity so SemverBumpSelector's effect doesn't re-fire on every render.
+  const setVersion = useCallback((v: string) => setManifest({ version: v }), [setManifest]);
 
   return (
     <div className="flex flex-col h-full gap-4 p-6 overflow-y-auto">

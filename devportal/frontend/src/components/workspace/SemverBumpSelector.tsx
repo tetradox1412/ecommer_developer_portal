@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSubmissionStore } from '../../store/submissionStore';
-import { bumpVersion, validateSemver } from '../../lib/semver';
+import { bumpVersion, compareSemver, validateSemver } from '../../lib/semver';
 import type { VersionBump } from '../../types';
 
 interface SemverBumpSelectorProps {
@@ -9,24 +9,36 @@ interface SemverBumpSelectorProps {
   onVersionChange: (v: string) => void;
 }
 
+// Statuses that "occupy" a (moduleName, version) slot — mirrors the backend.
+const OCCUPYING_STATUSES = ['PENDING', 'COMPILING', 'ACTIVE'];
+
 export function SemverBumpSelector({ moduleName, version, onVersionChange }: SemverBumpSelectorProps) {
   const { fetchVersions } = useSubmissionStore();
   const [latest, setLatest] = useState<string | null>(null);
   const [bump, setBump] = useState<VersionBump>('patch');
   const [custom, setCustom] = useState('');
 
+  // Determine the highest occupying version for this module.
   useEffect(() => {
     if (!moduleName.trim()) return;
     fetchVersions(moduleName).then((vs) => {
-      setLatest(vs.length > 0 ? vs[0].version : null);
+      const occupying = vs
+        .filter((v) => OCCUPYING_STATUSES.includes(v.status))
+        .map((v) => v.version)
+        .sort(compareSemver);
+      setLatest(occupying.length > 0 ? occupying[occupying.length - 1] : null);
     });
   }, [moduleName, fetchVersions]);
 
+  // Apply the chosen bump. Depends only on latest + bump (onVersionChange is
+  // stable from the parent via useCallback, and its identity isn't a trigger).
   useEffect(() => {
     if (!latest) return;
+    if (bump === 'custom') return; // custom is driven by the text input below
     const next = bumpVersion(latest, bump);
     if (next) onVersionChange(next);
-  }, [latest, bump, onVersionChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [latest, bump]);
 
   const options: Array<{ id: VersionBump; label: string; value: string | null }> = [
     { id: 'patch', label: 'Patch', value: latest ? bumpVersion(latest, 'patch') : null },
