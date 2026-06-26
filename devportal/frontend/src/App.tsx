@@ -577,7 +577,7 @@ export default function App() {
                     <Route path="details" element={<DetailsStep />} />
                     <Route path="review" element={<ReviewSubmitStep />} />
                   </Route>
-                  <Route path="/workspace/history" element={<PortalLayout><SubmissionHistory /></PortalLayout>} />
+                  <Route path="/workspace/history" element={<SubmissionHistory />} />
 
                   <Route path="/api-explorer" element={<ApiExplorer />} />
                   <Route path="/tickets" element={<TicketInbox />} />
