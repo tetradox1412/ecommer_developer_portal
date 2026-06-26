@@ -49,20 +49,12 @@ export function DetailsStep() {
 
           <div className="grid grid-cols-2 gap-4">
             <Field label="Icon Name (Phosphor)" value={metadata.iconName} onChange={(v) => setMetadata({ iconName: v })} placeholder="Heartbeat" />
-            <Field label="Color" value={metadata.color} onChange={(v) => setMetadata({ color: v })} placeholder="rose" />
           </div>
 
           <Field label="Tagline" value={metadata.tagline} onChange={(v) => setMetadata({ tagline: v })} placeholder="One-line marketing tagline" />
           <Field label="Long Description" textarea value={metadata.longDescription} onChange={(v) => setMetadata({ longDescription: v })} placeholder="Full marketing + functional description" />
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold text-zinc-400 tracking-wider uppercase">Price (0 = free)</label>
-              <input type="number" min="0" step="0.01" value={metadata.price}
-                onChange={(e) => setMetadata({ price: parseFloat(e.target.value) || 0 })}
-                className="px-4 py-2.5 rounded-xl bg-zinc-100/50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 text-sm outline-none focus:border-cyan-500" />
-            </div>
-          </div>
+
 
           <FeaturesEditor features={metadata.features} onChange={(f) => setMetadata({ features: f })} />
         </section>
