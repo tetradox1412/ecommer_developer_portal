@@ -1,0 +1,15 @@
+<manifest>
+  <name>inventory-sync</name>
+  <version>1.0.0</version>
+  <description>Real-time warehouse stock synchronisation.</description>
+  <contextPath>/api/inventory</contextPath>
+  <displayName>Real-time Inventory</displayName>
+  <longDescription>Ensure you never oversell your items again.</longDescription>
+  <category>Operations</category>
+  <industry>Logistics</industry>
+  <iconName>Warehouse</iconName>
+  <tagline>Keep stock in perfect sync.</tagline>
+  <color>#228B22</color>
+  <features>Real-time sync, Webhooks, Low stock alerts</features>
+  <price>49.00</price>
+</manifest>

@@ -108,7 +108,6 @@ export function ReviewSubmitStep() {
               <Info k="Display" v={workspace.metadata.displayName} />
               <Info k="Industry" v={workspace.metadata.industry} />
               <Info k="Category" v={workspace.metadata.category} />
-              <Info k="Price" v={String(workspace.metadata.price)} />
             </div>
             {workspace.metadata.features.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-3">
