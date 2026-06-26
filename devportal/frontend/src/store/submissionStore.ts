@@ -1,17 +1,20 @@
 import { create } from 'zustand';
-import type { Submission, SubmitDslRequest } from '../types';
+import type { Submission, SubmitDslRequest, VersionInfo } from '../types';
 import { api } from '../api/bff';
 
 interface SubmissionState {
   submissions: Submission[];
+  versions: VersionInfo[];
   isLoading: boolean;
   error: string | null;
   fetchSubmissions: () => Promise<void>;
+  fetchVersions: (moduleName: string) => Promise<VersionInfo[]>;
   submitDsl: (request: SubmitDslRequest) => Promise<string | null>;
 }
 
 export const useSubmissionStore = create<SubmissionState>((set) => ({
   submissions: [],
+  versions: [],
   isLoading: false,
   error: null,
   fetchSubmissions: async () => {
@@ -22,6 +25,17 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to fetch submissions';
       set({ error: message, isLoading: false });
+    }
+  },
+  fetchVersions: async (moduleName) => {
+    try {
+      const data = await api.getModuleVersions(moduleName);
+      set({ versions: data });
+      return data;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch versions';
+      set({ error: message });
+      return [];
     }
   },
   submitDsl: async (request) => {

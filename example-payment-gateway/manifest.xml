@@ -1,0 +1,15 @@
+<manifest>
+  <name>payment-gateway</name>
+  <version>0.9.0</version>
+  <description>Custom payment gateway adapter for eCommerce.</description>
+  <contextPath>/api/payments</contextPath>
+  <displayName>Custom Payment Gateway</displayName>
+  <longDescription>Integrate securely with top global payment providers.</longDescription>
+  <category>Payments</category>
+  <industry>Fintech</industry>
+  <iconName>CreditCard</iconName>
+  <tagline>Seamless checkouts anywhere.</tagline>
+  <color>#00BFFF</color>
+  <features>Credit cards, Apple Pay, Google Pay</features>
+  <price>0</price>
+</manifest>

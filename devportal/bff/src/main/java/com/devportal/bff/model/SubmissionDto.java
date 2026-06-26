@@ -6,7 +6,21 @@ public record SubmissionDto(
     String version,
     String status,
     String submittedAt,
-    String errorMessage
+    String errorMessage,
+    String displayName,
+    String longDescription,
+    String category,
+    String industry,
+    String iconName,
+    String tagline,
+    String color,
+    String features,
+    Double price,
+    String changelog,
+    String releaseNotes,
+    String dslSchema,
+    String dslViews,
+    String manifestXml
 ) {
     public static SubmissionDto from(SubmissionEntity e) {
         return new SubmissionDto(
@@ -15,7 +29,21 @@ public record SubmissionDto(
             e.getVersion(),
             e.getStatus(),
             e.getSubmittedAt() != null ? e.getSubmittedAt().toString() : null,
-            e.getErrorMessage()
+            e.getErrorMessage(),
+            e.getDisplayName(),
+            e.getLongDescription(),
+            e.getCategory(),
+            e.getIndustry(),
+            e.getIconName(),
+            e.getTagline(),
+            e.getColor(),
+            e.getFeatures(),
+            e.getPrice(),
+            e.getChangelog(),
+            e.getReleaseNotes(),
+            e.getDslSchema(),
+            e.getDslViews(),
+            e.getManifestXml()
         );
     }
 }

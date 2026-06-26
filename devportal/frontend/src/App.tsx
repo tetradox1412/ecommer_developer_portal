@@ -3,26 +3,28 @@ import { BrowserRouter, Routes, Route, NavLink, Navigate, Outlet } from 'react-r
 import { ThemeProvider, useTheme } from './components/ui/ThemeContext';
 import { useAuthStore } from './store/authStore';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
-import { SubmissionPortal } from './screens/submission/SubmissionPortal';
 import { ApiExplorer } from './screens/api-explorer/ApiExplorer';
 import { TicketInbox } from './screens/ticket-inbox/TicketInbox';
-import { DslStudio } from './screens/playground/DslStudio';
-import { ManifestBuilder } from './screens/manifest/ManifestBuilder';
+import { WorkspaceLayout } from './screens/workspace/WorkspaceLayout';
+import { DslStep } from './screens/workspace/steps/DslStep';
+import { ManifestStep } from './screens/workspace/steps/ManifestStep';
+import { DetailsStep } from './screens/workspace/steps/DetailsStep';
+import { ReviewSubmitStep } from './screens/workspace/steps/ReviewSubmitStep';
+import { SubmissionHistory } from './screens/workspace/SubmissionHistory';
 import { Login } from './screens/auth/Login';
 import { RequireAuth, RequireRole, GuestRoute } from './components/auth/AuthGuards';
 import { FormField } from './components/ui/FormField';
 import { Button } from './components/ui/Button';
 import { api } from './api/bff';
 import { ThinkingFigure } from './components/ui/LineArt';
-import { 
-  FileText, 
-  MagnifyingGlass, 
-  Ticket, 
-  Package, 
-  Sun, 
-  Moon, 
-  SignOut, 
-  List, 
+import {
+  MagnifyingGlass,
+  Ticket,
+  Package,
+  Sun,
+  Moon,
+  SignOut,
+  List,
   X,
   User,
   Clock,
@@ -32,11 +34,10 @@ import {
 } from '@phosphor-icons/react';
 
 const navItems = [
-  { path: '/', label: 'Submission Portal', icon: FileText },
+  { path: '/workspace', label: 'Module Workspace', icon: Hammer },
+  { path: '/workspace/history', label: 'Submission History', icon: Package },
   { path: '/api-explorer', label: 'API Explorer', icon: MagnifyingGlass },
   { path: '/tickets', label: 'Ticket Inbox', icon: Ticket },
-  { path: '/dsl-studio', label: 'DSL Studio', icon: Hammer },
-  { path: '/manifest', label: 'Manifest Builder', icon: Package },
 ];
 
 // Guards have been moved to components/auth/AuthGuards
@@ -544,7 +545,7 @@ function CatchAllRoute() {
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
-  return <Navigate to="/" replace />;
+  return <Navigate to="/workspace" replace />;
 }
 
 export default function App() {
@@ -564,12 +565,22 @@ export default function App() {
               {/* Developer Portal Routes */}
               <Route element={<RequireRole allowedRoles={['DEVELOPER_PARTNER']} />}>
                 <Route element={<PortalLayout />}>
-                  <Route path="/" element={<SubmissionPortal />} />
+                  <Route path="/" element={<Navigate to="/workspace" replace />} />
+                  <Route path="/dsl-studio" element={<Navigate to="/workspace/dsl" replace />} />
+                  <Route path="/manifest" element={<Navigate to="/workspace/manifest" replace />} />
+                  <Route path="/playground" element={<Navigate to="/workspace/dsl" replace />} />
+
+                  <Route path="/workspace" element={<WorkspaceLayout />}>
+                    <Route index element={<Navigate to="/workspace/dsl" replace />} />
+                    <Route path="dsl" element={<DslStep />} />
+                    <Route path="manifest" element={<ManifestStep />} />
+                    <Route path="details" element={<DetailsStep />} />
+                    <Route path="review" element={<ReviewSubmitStep />} />
+                  </Route>
+                  <Route path="/workspace/history" element={<SubmissionHistory />} />
+
                   <Route path="/api-explorer" element={<ApiExplorer />} />
                   <Route path="/tickets" element={<TicketInbox />} />
-                  <Route path="/playground" element={<Navigate to="/dsl-studio" replace />} />
-                  <Route path="/dsl-studio" element={<DslStudio />} />
-                  <Route path="/manifest" element={<ManifestBuilder />} />
                 </Route>
               </Route>
 

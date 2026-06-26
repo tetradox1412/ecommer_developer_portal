@@ -9,22 +9,22 @@ export function RequireAuth() {
 export function RequireRole({ allowedRoles }: { allowedRoles: string[] }) {
   const { user } = useAuthStore();
   if (!user) return <Navigate to="/login" replace />;
-  
+
   if (!allowedRoles.includes(user.role)) {
-    if (user.role === 'DEVELOPER_PARTNER') return <Navigate to="/" replace />;
+    if (user.role === 'DEVELOPER_PARTNER') return <Navigate to="/workspace" replace />;
     return <Navigate to="/login" replace />;
   }
-  
+
   return <Outlet />;
 }
 
 export function GuestRoute() {
   const { isAuthenticated, user } = useAuthStore();
-  
+
   if (isAuthenticated && user) {
-    if (user.role === 'DEVELOPER_PARTNER') return <Navigate to="/" replace />;
-    return <Navigate to="/" replace />;
+    if (user.role === 'DEVELOPER_PARTNER') return <Navigate to="/workspace" replace />;
+    return <Navigate to="/workspace" replace />;
   }
-  
+
   return <Outlet />;
 }

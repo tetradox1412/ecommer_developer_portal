@@ -1,4 +1,4 @@
-import type { ModuleApi, Submission, SubmitDslRequest, Ticket } from '../types';
+import type { ModuleApi, Submission, SubmitDslRequest, Ticket, VersionInfo } from '../types';
 
 const BFF_BASE = import.meta.env.VITE_BFF_URL ?? 'http://localhost:8084';
 
@@ -8,6 +8,8 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options?.headers,
     },
@@ -60,6 +62,9 @@ export const api = {
 
   getSubmissions: () =>
     request<Submission[]>('/bff/developer/submissions'),
+
+  getModuleVersions: (moduleName: string) =>
+    request<VersionInfo[]>(`/bff/developer/submissions/${encodeURIComponent(moduleName)}/versions`),
 
   // API Explorer
   getAllModuleApis: () =>

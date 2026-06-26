@@ -1,0 +1,15 @@
+<manifest>
+  <name>loyalty-points</name>
+  <version>1.2.0</version>
+  <description>Adds loyalty points integration to the checkout.</description>
+  <contextPath>/api/loyalty</contextPath>
+  <displayName>Loyalty Points Integration</displayName>
+  <longDescription>A robust loyalty points system that automatically rewards customers.</longDescription>
+  <category>Marketing</category>
+  <industry>Retail</industry>
+  <iconName>Star</iconName>
+  <tagline>Reward your best customers!</tagline>
+  <color>#FFD700</color>
+  <features>Points on purchase, Redeem at checkout, Tiered rewards</features>
+  <price>29.99</price>
+</manifest>

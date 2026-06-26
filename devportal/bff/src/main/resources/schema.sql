@@ -41,21 +41,21 @@ CREATE TABLE IF NOT EXISTS user_activities (
 
 -- Seed some demo data
 INSERT INTO submissions (id, developer_id, module_name, version, status, submitted_at) VALUES
-    ('SUB-001', 'dev-001', 'loyalty-points', '1.2.0', 'ACTIVE', CURRENT_TIMESTAMP);
+    ('SUB-001', 'admin-001', 'loyalty-points', '1.2.0', 'ACTIVE', CURRENT_TIMESTAMP);
 INSERT INTO submissions (id, developer_id, module_name, version, status, submitted_at) VALUES
-    ('SUB-002', 'dev-001', 'payment-gateway', '0.9.0', 'COMPILING', CURRENT_TIMESTAMP);
+    ('SUB-002', 'admin-001', 'payment-gateway', '0.9.0', 'COMPILING', CURRENT_TIMESTAMP);
 INSERT INTO submissions (id, developer_id, module_name, version, status, submitted_at) VALUES
-    ('SUB-003', 'dev-001', 'auth-adapter', '2.0.1', 'ERROR', CURRENT_TIMESTAMP);
+    ('SUB-003', 'admin-001', 'auth-adapter', '2.0.1', 'ERROR', CURRENT_TIMESTAMP);
 INSERT INTO submissions (id, developer_id, module_name, version, status, submitted_at) VALUES
-    ('SUB-004', 'dev-001', 'inventory-sync', '1.0.0', 'PENDING', CURRENT_TIMESTAMP);
+    ('SUB-004', 'admin-001', 'inventory-sync', '1.0.0', 'PENDING', CURRENT_TIMESTAMP);
 INSERT INTO submissions (id, developer_id, module_name, version, status, submitted_at) VALUES
-    ('SUB-005', 'dev-001', 'tax-calculator', '1.1.0', 'ACTIVE', CURRENT_TIMESTAMP);
+    ('SUB-005', 'admin-001', 'tax-calculator', '1.1.0', 'ACTIVE', CURRENT_TIMESTAMP);
 INSERT INTO submissions (id, developer_id, module_name, version, status, submitted_at) VALUES
-    ('SUB-006', 'dev-001', 'shipping-estimator', '2.3.4', 'ACTIVE', CURRENT_TIMESTAMP);
+    ('SUB-006', 'admin-001', 'shipping-estimator', '2.3.4', 'ACTIVE', CURRENT_TIMESTAMP);
 INSERT INTO submissions (id, developer_id, module_name, version, status, submitted_at) VALUES
-    ('SUB-007', 'dev-001', 'crm-integration', '1.0.0', 'COMPILING', CURRENT_TIMESTAMP);
+    ('SUB-007', 'admin-001', 'crm-integration', '1.0.0', 'COMPILING', CURRENT_TIMESTAMP);
 INSERT INTO submissions (id, developer_id, module_name, version, status, submitted_at) VALUES
-    ('SUB-008', 'dev-001', 'analytics-exporter', '1.5.0', 'ACTIVE', CURRENT_TIMESTAMP);
+    ('SUB-008', 'admin-001', 'analytics-exporter', '1.5.0', 'ACTIVE', CURRENT_TIMESTAMP);
 
 INSERT INTO tickets (id, title, description, requested_by, status, posted_at) VALUES
     ('TCK-001', 'Add bulk discount support', 'We need an API to apply bulk discounts when order quantity exceeds 50 units. Should integrate with existing pricing engine.', 'Acme Corp (anonymised)', 'OPEN', CURRENT_TIMESTAMP);
