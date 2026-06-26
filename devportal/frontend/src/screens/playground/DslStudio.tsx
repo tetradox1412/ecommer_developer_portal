@@ -11,6 +11,9 @@ import {
   CheckCircle,
   XCircle,
   Warning,
+  Database,
+  ShieldCheck,
+  Cpu
 } from '@phosphor-icons/react';
 
 // ── Placeholders ──────────────────────────────────────────────────────────────
@@ -153,16 +156,21 @@ export function DslStudio() {
     const model = schemaEditor.getModel();
     if (!model) return;
 
-    const markers: Monaco.editor.IMarkerData[] = errors.map(e => ({
-      startLineNumber: e.line,
-      endLineNumber:   e.line,
-      startColumn:     e.column,
-      endColumn:       model.getLineMaxColumn(Math.min(e.line, model.getLineCount())),
-      message:         e.message,
-      severity: e.severity === 'error'
-        ? monaco.MarkerSeverity.Error
-        : monaco.MarkerSeverity.Warning,
-    }));
+    const markers: Monaco.editor.IMarkerData[] = errors.map(e => {
+      const line = Math.max(1, Math.min(e.line, model.getLineCount()));
+      const maxCol = model.getLineMaxColumn(line);
+      const col = Math.max(1, Math.min(e.column, maxCol));
+      return {
+        startLineNumber: line,
+        endLineNumber:   line,
+        startColumn:     col,
+        endColumn:       maxCol,
+        message:         e.message,
+        severity: e.severity === 'error'
+          ? monaco.MarkerSeverity.Error
+          : monaco.MarkerSeverity.Warning,
+      };
+    });
 
     monaco.editor.setModelMarkers(model, 'hospital-dsl', markers);
   }, []);
@@ -206,11 +214,11 @@ export function DslStudio() {
   const handleGenerate = async () => {
     setGenStatus('loading');
     setLogs([]);
-    addLog('▶  Initializing DSL engine…');
-    addLog('⏳  Parsing schema and views…');
+    addLog('[INFO] Initializing DSL engine...');
+    addLog('[INFO] Parsing schema and views...');
     try {
       await api.generateDslProject(schema, views);
-      addLog('✅  Generation complete — your project ZIP is downloading.', 'success');
+      addLog('[SUCCESS] Generation complete — your project ZIP is downloading.', 'success');
       setGenStatus('success');
     } catch (err: unknown) {
       const raw = err instanceof Error ? err.message : String(err);
@@ -413,14 +421,16 @@ export function DslStudio() {
                     key={i}
                     className="px-4 py-2 flex items-start gap-3 bg-white dark:bg-zinc-950 cursor-pointer hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
                     onClick={() => {
-                      // Jump to the line in the schema editor
-                      if (schemaEditorRef.current && activeTab === 'schema') {
-                        schemaEditorRef.current.revealLineInCenter(e.line);
-                        schemaEditorRef.current.setPosition({ lineNumber: e.line, column: e.column });
-                        schemaEditorRef.current.focus();
-                      } else {
-                        setActiveTab('schema');
-                      }
+                      setActiveTab('schema');
+                      setTimeout(() => {
+                        if (schemaEditorRef.current) {
+                          const line = Math.max(1, Math.min(e.line, schemaEditorRef.current.getModel()?.getLineCount() ?? 1));
+                          const col = Math.max(1, e.column);
+                          schemaEditorRef.current.revealLineInCenter(line);
+                          schemaEditorRef.current.setPosition({ lineNumber: line, column: col });
+                          schemaEditorRef.current.focus();
+                        }
+                      }, 100);
                     }}
                   >
                     <span className={`shrink-0 text-[10px] font-bold font-mono px-1.5 py-0.5 rounded mt-0.5
@@ -440,16 +450,21 @@ export function DslStudio() {
           {/* Info cards */}
           <div className="shrink-0 grid grid-cols-3 gap-3">
             {[
-              { icon: '🏥', label: 'Modules',  desc: 'Entities + CRUD APIs' },
-              { icon: '🔐', label: 'Auth',     desc: 'JWT + Role-based'     },
-              { icon: '⚛️', label: 'Output',   desc: 'Spring Boot + React'  },
-            ].map(c => (
-              <div key={c.label} className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 flex flex-col gap-1 bg-white dark:bg-zinc-950">
-                <span className="text-lg">{c.icon}</span>
-                <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 font-sans">{c.label}</span>
-                <span className="text-[11px] text-zinc-500">{c.desc}</span>
-              </div>
-            ))}
+              { icon: Database, label: 'Modules',  desc: 'Entities + CRUD APIs', color: 'text-blue-500 dark:text-blue-400' },
+              { icon: ShieldCheck, label: 'Auth',     desc: 'JWT + Role-based', color: 'text-emerald-500 dark:text-emerald-400' },
+              { icon: Cpu, label: 'Output',   desc: 'Spring Boot + React', color: 'text-purple-500 dark:text-purple-400' },
+            ].map(c => {
+              const CardIcon = c.icon;
+              return (
+                <div key={c.label} className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 flex flex-col gap-2 bg-white dark:bg-zinc-900/50 shadow-xs hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-200">
+                  <CardIcon className={`w-5 h-5 ${c.color}`} weight="bold" />
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 font-sans">{c.label}</span>
+                    <span className="text-[10px] text-zinc-500 mt-0.5">{c.desc}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

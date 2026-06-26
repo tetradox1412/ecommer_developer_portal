@@ -44,3 +44,6 @@ PULL_REQUEST.md
 
 
 !devportal/.env.example
+
+# Local logs
+*.log

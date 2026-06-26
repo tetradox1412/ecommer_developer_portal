@@ -181,7 +181,11 @@ function PortalLayout({ children }: { children?: React.ReactNode }) {
               <NavLink
                 key={item.path}
                 to={item.path}
-                onClick={() => setIsSidebarOpen(false)}
+                onClick={() => {
+                  if (window.innerWidth < 1024) {
+                    setIsSidebarOpen(false);
+                  }
+                }}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 text-sm font-medium ${
                     isActive
@@ -231,9 +235,13 @@ function PortalLayout({ children }: { children?: React.ReactNode }) {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col w-full min-w-0 h-[100dvh] overflow-hidden bg-white dark:bg-zinc-950">
+      <main className="flex-1 flex flex-col w-full min-w-0 h-[100dvh] overflow-hidden bg-zinc-50 dark:bg-zinc-950 grid-bg relative isolate">
+        {/* Background ambient lighting */}
+        <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] bg-cyan-500/10 dark:bg-cyan-500/[0.015] rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute bottom-[-100px] left-[-100px] w-[500px] h-[500px] bg-indigo-500/10 dark:bg-indigo-500/[0.015] rounded-full blur-3xl pointer-events-none -z-10" />
+
         {/* Header */}
-        <header className="h-16 flex items-center justify-between px-6 border-b border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 shrink-0 z-30">
+        <header className="h-16 flex items-center justify-between px-6 border-b border-zinc-200 dark:border-zinc-900 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-md shrink-0 z-30">
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
             className="p-2 -ml-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 rounded-lg transition-colors duration-200"

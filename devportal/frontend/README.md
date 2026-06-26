@@ -72,7 +72,13 @@ export default defineConfig([
 ])
 ```
 
-## Project docs
+## Project Documentation
 
-- [DSL syntax guide](./docs/dsl-syntax.md)
-- [Takeover and architecture guide](./docs/takeover-architecture.md)
+The documentation has been consolidated at the project root level. Please consult:
+
+- **[Domain-Specific Language (DSL) Guide](../../docs/dsl-syntax-reference.md)**
+- **[Full Stack Setup & Developer Guide](../../docs/README.md)**
+- **[Frontend Takeover Architecture](../../docs/takeover-architecture.md)**
+- **[Backend BFF Architecture & API Reference](../../docs/backend-architecture.md)**
+- **[Visual Flow Diagrams](../../docs/flow-diagrams.md)**
+- **[Handover Details](../../docs/handover.md)**

@@ -40,20 +40,30 @@ Welcome to the comprehensive documentation for the Developer Portal application.
 
 ---
 
-### 2. Architecture Documentation
+### 2. Frontend Architecture Documentation
 **File**: [`takeover-architecture.md`](takeover-architecture.md)
 
-**Best for**: Understanding system design, taking over project, architecture review
+**Best for**: Understanding frontend React UI client design and layouts
 
 **Contents**:
-- Complete system architecture
 - Component hierarchy
-- Data flow diagrams
-- State management patterns
-- API integration details
-- Deployment pipeline
-- Security considerations
-- Performance optimizations
+- Line art widgets rendering
+- Frontend routing & state (Zustand)
+- Key screen layouts
+
+---
+
+### 3. Backend BFF Architecture Documentation
+**File**: [`backend-architecture.md`](backend-architecture.md)
+
+**Best for**: Understanding Spring Boot BFF controller design, API client routing, security authorization configurations, databases, and compiler execution paths
+
+**Contents**:
+- BFF Controllers package configurations
+- Security filter chains permissions
+- DB schemas and seeds setup
+- Subprocess validate execution logic
+- SSE streaming setup
 
 **Read this if you want to**:
 - Understand the full system
@@ -317,10 +327,12 @@ All documentation follows these standards:
 
 All docs are located in:
 ```
-devportal/frontend/docs/
+docs/
 ├── index.md                    # This file
 ├── README.md                   # Quick start
-├── takeover-architecture.md    # Architecture
+├── handover.md                 # Handover guide
+├── takeover-architecture.md    # Frontend architecture
+├── backend-architecture.md     # Backend architecture
 ├── function-reference.md       # Functions
 ├── dsl-syntax-reference.md     # DSL guide
 ├── flow-diagrams.md            # Visual flows
@@ -440,7 +452,9 @@ Special thanks to all contributors who help keep documentation up to date.
 **Choose your path:**
 
 - 🚀 **Quick Start**: [README.md](README.md)
-- 🏗️ **Architecture Deep Dive**: [takeover-architecture.md](takeover-architecture.md)
+- 📋 **Handover & Transition**: [handover.md](handover.md)
+- 🏗️ **Frontend Architecture Deep Dive**: [takeover-architecture.md](takeover-architecture.md)
+- ☕ **Backend Architecture Deep Dive**: [backend-architecture.md](backend-architecture.md)
 - 📖 **DSL Development**: [dsl-syntax-reference.md](dsl-syntax-reference.md)
 - 🔧 **API Reference**: [function-reference.md](function-reference.md)
 - 🗺️ **Visual Flows**: [flow-diagrams.md](flow-diagrams.md)

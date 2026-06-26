@@ -12,10 +12,16 @@ import java.util.zip.*;
 @Service
 public class DslEngineService {
 
-    private static final String CLI_DIR =
-        "C:/Mridul Joy/Programming/Software Grid/Giolit Ecommerce/Developer Console" +
-        "/Hospital-DSL-f2d48c4c35fc96526d2fdb10bdd8c5a14254ac85" +
-        "/Hospital-DSL-f2d48c4c35fc96526d2fdb10bdd8c5a14254ac85/v1";
+    private String getCliDir() {
+        Path userDir = Paths.get(System.getProperty("user.dir"));
+        Path candidate1 = userDir.resolve("../../Hospital-DSL-f2d48c4c35fc96526d2fdb10bdd8c5a14254ac85/Hospital-DSL-f2d48c4c35fc96526d2fdb10bdd8c5a14254ac85/v1").normalize().toAbsolutePath();
+        Path candidate2 = userDir.resolve("Hospital-DSL-f2d48c4c35fc96526d2fdb10bdd8c5a14254ac85/Hospital-DSL-f2d48c4c35fc96526d2fdb10bdd8c5a14254ac85/v1").normalize().toAbsolutePath();
+        if (Files.exists(candidate1)) {
+            return candidate1.toString();
+        }
+        return candidate2.toString();
+    }
+
 
     public byte[] generate(String schemaContent, String viewsContent) throws Exception {
         Path workDir = Files.createTempDirectory("dsl-");
@@ -39,7 +45,7 @@ public class DslEngineService {
                 projectPrefix,
                 outputDir.toString().replace("\\", "/")
             );
-            pb.directory(new File(CLI_DIR));
+            pb.directory(new File(getCliDir()));
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
@@ -70,7 +76,7 @@ public class DslEngineService {
             ProcessBuilder pb = new ProcessBuilder(
                 resolveNode(), "cli.js", "validate", projectPrefix
             );
-            pb.directory(new File(CLI_DIR));
+            pb.directory(new File(getCliDir()));
             pb.redirectErrorStream(true);
             Process process = pb.start();
             String output = new String(process.getInputStream().readAllBytes());
