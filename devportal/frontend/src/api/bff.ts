@@ -1,4 +1,4 @@
-import type { ModuleApi, Submission, SubmitDslRequest, Ticket } from '../types';
+import type { ModuleApi, Submission, SubmitDslRequest, Ticket, VersionInfo } from '../types';
 
 const BFF_BASE = import.meta.env.VITE_BFF_URL ?? 'http://localhost:8084';
 
@@ -60,6 +60,9 @@ export const api = {
 
   getSubmissions: () =>
     request<Submission[]>('/bff/developer/submissions'),
+
+  getModuleVersions: (moduleName: string) =>
+    request<VersionInfo[]>(`/bff/developer/submissions/${encodeURIComponent(moduleName)}/versions`),
 
   // API Explorer
   getAllModuleApis: () =>
